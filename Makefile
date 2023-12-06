@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -std=c++201 -Wall -Wextra
+CFLAGS = -std=c++20 -Wall -Wextra
 SRC_DIR = src/
 
 crossroad: 
