@@ -3,35 +3,55 @@
 #ifndef GRID_HPP
 #define GRID_HPP
 
-class Point {
-    private:
-        bool empty;
+enum Orientation { left, right, up, down };
 
-        int bg_r;
-        int bg_g;
-        int bg_b;
+class Color {
+  public:
+    int r;
+    int g;
+    int b;
+    Color(int red, int green, int blue);
 
-        int r;
-        int g;
-        int b;
-
-    public:
-        Point(int bg_red, int bg_green, int bg_blue);
-        bool isEmpty();
-        // TODO get color
-        void setColor(int red, int green, int blue);
-        void clearPoint();
+    bool operator==(const Color &c) {
+        if (r == c.r && g == c.g && b == c.b)
+            return true;
+        return false;
+    }
 };
 
+class Point {
+  private:
+    bool empty;
+
+    Color bg_color = Color(255, 255, 255);
+    Color color = Color(255, 255, 255);
+
+  public:
+    Point(int bg_red, int bg_green, int bg_blue);
+    bool isEmpty();
+    Color getColor();
+    void setColor(Color color);
+    void clearPoint();
+};
 
 class Grid {
-    private:
-        std::vector<std::vector<Point>> grid;
-    
-    public:
-        Grid(int size);
-        Point getPoint(int x, int y);
-        void setPoint(int x, int y, Point point);
+  private:
+    std::vector<std::vector<Point>> grid;
+    const int car_len = 8;
+    const int car_wid = 4;
+    const Color car_color = Color(255, 0, 0);
+    const Color person_color = Color(0, 255, 0);
+
+  public:
+    Grid(int size);
+    Point getPoint(int x, int y);
+    void setPoint(int x, int y, Point point);
+    void createCar(int x_left, int y_left, Orientation orientation);
+    void createPerson(int x, int y);
+    bool isCar(int x, int y);
+    bool isPerson(int x, int y);
+    void removeCar(int x_left, int y_left, Orientation orientation);
+    void removePerson(int x, int y);
 };
 
 #endif
