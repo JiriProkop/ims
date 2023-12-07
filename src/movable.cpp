@@ -34,21 +34,49 @@ Movable::Movable(MovableThing _kind, int _start_x, int _start_y, int _end_x, int
  * @return Returns a boolean (true if the way is clear).
 */
 bool Movable::checkIfClearWay(Grid grid) {
-    bool clear = false; // default value
+    bool clear = true; // default value
+
+    // how far should we check the space
+    int check_end_x = x;
+    int check_end_y = y;
+
+    int space = 0;
+    if (kind == person) {
+        space = SPACE_BETWEEN_PEOPLE;
+    } else {
+        space = SPACE_BETWEEN_CARS;
+    }
+
+    int add = 0;
 
     if (orientation == left) {
-        clear = grid.getPoint(x - 1, y).isEmpty()
-            && grid.getPoint(x - 1 - SPACE_BETWEEN_OBJECTS, y).isEmpty();
+        check_end_x -= space;
+        add = -1;
     } else if (orientation == right) {
-        clear = grid.getPoint(x + 1, y).isEmpty()
-            && grid.getPoint(x + 1 + SPACE_BETWEEN_OBJECTS, y).isEmpty();
+        check_end_x += space;
+        add = 1;
     } else if (orientation == up) {
-        clear = grid.getPoint(x, y + 1).isEmpty()
-            && grid.getPoint(x, y + 1 + SPACE_BETWEEN_OBJECTS).isEmpty();
+        check_end_y += space;
+        add = 1;
     } else if (orientation == down) {
-        clear = grid.getPoint(x, y - 1).isEmpty()
-            && grid.getPoint(x, y - 1 - SPACE_BETWEEN_OBJECTS).isEmpty();
+        check_end_y -= space;
+        add = -1;
     }
+
+    for (int i = x; i != check_end_x; i += add) {
+        if (!grid.getPoint(i, check_end_y).isEmpty()) {
+            clear = false;
+            break;
+        }
+    }
+
+    for (int j = y; j != check_end_y; j += add) {
+        if (!grid.getPoint(check_end_x, j).isEmpty()) {
+            clear = false;
+            break;
+        }
+    }
+
     // TODO only checks the left front point of the car, is it good enough?
 
     return clear;
