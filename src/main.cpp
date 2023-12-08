@@ -3,16 +3,22 @@
 #include "image.hpp"
 
 int main() {
-    Grid grid(100);
+    Grid grid(DEFAULT_IMAGE_SIZE);
+
+    generateCrossroadBackgroud(&grid);
+
     int SECONDS = 250;
 
     int finished = 0;
     std::vector<Movable> movableThings;
     for (int i = 0; i < SECONDS; i++) {
-        if (i % 10 == 0) {
-            Movable tmp(car, 40, 10, 40, 98, up, &grid);
-            movableThings.push_back(tmp);
+        if (i % 16 == 0) {
+            try {
+                Movable tmp(car, 10, 54, 118, 54, right, &grid);
+                movableThings.push_back(tmp);
+            } catch (const std::exception& e) { }
         }
+
 
         for (size_t j = 0; j < movableThings.size(); j++) {
             if (movableThings[j].checkIfFinished()) {
@@ -25,7 +31,7 @@ int main() {
             }
         }
 
-        generateImage(grid, 100, "output/" + std::to_string(i) + ".bmp");
+        generateImage(grid, DEFAULT_IMAGE_SIZE, "output/" + std::to_string(i) + ".bmp");
     }
 
 

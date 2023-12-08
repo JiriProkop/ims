@@ -1,7 +1,72 @@
 #include <iostream>
 #include <fstream>
 #include <cstdint>
+#include "grid.hpp"
 #include "image.hpp"
+
+void generateCrossroadBackgroud(Grid *grid) {
+    // set general gray backgroud
+    for (int y = 0; y < DEFAULT_IMAGE_SIZE; y++) {
+        for (int x = 0; x < DEFAULT_IMAGE_SIZE; x++) {
+            Point point(60, 60, 60);
+            point.clearPoint();
+            grid->setPoint(x, y, point);
+        }
+    }
+
+    // set the "Purkynova" street
+    const int PURKYNOVA_START = 48;
+    const int PURKYNOVA_WIDTH = 24;
+    for (int y = 0; y < DEFAULT_IMAGE_SIZE; y++) {
+        for (int x = PURKYNOVA_START; x < PURKYNOVA_START + PURKYNOVA_WIDTH; x++) {
+            Point point(120, 120, 120);
+            point.clearPoint();
+            grid->setPoint(x, y, point);
+        }
+    }
+
+    // set the "Skacelova" street
+    const int SKACELOVA_START = 46;
+    const int SKACELOVA_WIDTH = 28;
+    for (int y = SKACELOVA_START; y < SKACELOVA_START + SKACELOVA_WIDTH; y++) {
+        for (int x = 0; x < DEFAULT_IMAGE_SIZE; x++) {
+            Point point(120, 120, 120);
+            point.clearPoint();
+            grid->setPoint(x, y, point);
+        }
+    }
+    
+    // set the crosswalks on the streets
+    const int CROSSWALK_WIDTH = 10;
+    for (int y = SKACELOVA_START + SKACELOVA_WIDTH + 8; y < SKACELOVA_START + SKACELOVA_WIDTH + 8 + CROSSWALK_WIDTH; y++) {
+        for (int x = PURKYNOVA_START; x < PURKYNOVA_START + PURKYNOVA_WIDTH; x++) {
+            Point point(200, 200, 200);
+            point.clearPoint();
+            grid->setPoint(x, y, point);
+        }
+    }
+    for (int y = SKACELOVA_START - 4 - CROSSWALK_WIDTH; y < SKACELOVA_START - 4; y++) {
+        for (int x = PURKYNOVA_START; x < PURKYNOVA_START + PURKYNOVA_WIDTH; x++) {
+            Point point(200, 200, 200);
+            point.clearPoint();
+            grid->setPoint(x, y, point);
+        }
+    }
+    for (int y = SKACELOVA_START; y < SKACELOVA_START + SKACELOVA_WIDTH; y++) {
+        for (int x = PURKYNOVA_START - 8 - CROSSWALK_WIDTH; x < PURKYNOVA_START - 8; x++) {
+            Point point(200, 200, 200);
+            point.clearPoint();
+            grid->setPoint(x, y, point);
+        }
+    }
+    for (int y = SKACELOVA_START; y < SKACELOVA_START + SKACELOVA_WIDTH; y++) {
+        for (int x = PURKYNOVA_START + PURKYNOVA_WIDTH + 4; x < PURKYNOVA_START + PURKYNOVA_WIDTH + 4 + CROSSWALK_WIDTH; x++) {
+            Point point(200, 200, 200);
+            point.clearPoint();
+            grid->setPoint(x, y, point);
+        }
+    }
+}
 
 void generateImage(Grid grid, int size, std::string fileName) {
     BitmapFileHeader fileHeader;
