@@ -5,6 +5,8 @@
 #ifndef IMAGE_HPP
 #define IMAGE_HPP
 
+#define DEFAULT_IMAGE_SIZE 120
+
 // pragma pack for correct alignment
 #pragma pack(push, 1)
 
@@ -36,6 +38,13 @@ struct BitmapInfoHeader {
     uint32_t colorsImportant;
 };
 #pragma pack(pop)
+
+/**
+ * A function for generating the crossroad background into the grid
+ * 
+ * @param grid The grid to generate the background. MUST have the size of 120!
+*/
+void generateCrossroadBackgroud(Grid *grid);
 
 /**
  * A function for generating a bitmap image from the grid.
