@@ -43,12 +43,12 @@ Grid::Grid(int size) {
 
 Point Grid::getPoint(int x, int y) {
     // TODO check for bounds
-    return grid[x][y];
+    return grid[y][x];
 }
 
 void Grid::setPoint(int x, int y, Point point) {
     // TODO check for bounds
-    grid[x][y] = point;
+    grid[y][x] = point;
 }
 
 /**
@@ -89,14 +89,14 @@ void Grid::createCar(int x_left, int y_left, Orientation orientation) {
             if(x_left + i * adjustXByOrientation < 0 || y_left + j * adjustYByOrientation < 0){
                 throw std::invalid_argument("The car does not fit - it would overflow the grid.");
             }
-            if (!grid[x_left + i * adjustXByOrientation][y_left + j * adjustYByOrientation].isEmpty()) {
+            if (!grid[y_left + j * adjustYByOrientation][x_left + i * adjustXByOrientation].isEmpty()) {
                 throw std::invalid_argument("The car does not fit - some 'needed' point is not empty.");
             }
         }
     }
     for (int i = 0; i < car_len; i++) {
         for (int j = 0; j < car_wid; j++) {
-            grid[x_left + i * adjustXByOrientation][y_left + j * adjustYByOrientation].setColor(car_color);
+            grid[y_left + j * adjustYByOrientation][x_left + i * adjustXByOrientation].setColor(car_color);
         }
     }
 }
@@ -142,7 +142,7 @@ void Grid::removeCar(int x_left, int y_left, Orientation orientation) {
     }
     for (int i = 0; i < car_len; i++) {
         for (int j = 0; j < car_wid; j++) {
-            grid[x_left + i * adjustXByOrientation][y_left + j * adjustYByOrientation].clearPoint();
+            grid[y_left + j * adjustYByOrientation][x_left + i * adjustXByOrientation].clearPoint();
         }
     }
 }
@@ -154,10 +154,10 @@ void Grid::removeCar(int x_left, int y_left, Orientation orientation) {
  * @param y y coordinate of the person
  */
 void Grid::createPerson(int x, int y) {
-    if (!(grid[x][y].isEmpty())) {
+    if (!(grid[y][x].isEmpty())) {
         throw std::invalid_argument("Place is already occupied.");
     }
-    grid[x][y].setColor(person_color);
+    grid[y][x].setColor(person_color);
 }
 
 /**
@@ -169,7 +169,7 @@ void Grid::createPerson(int x, int y) {
 void Grid::removePerson(int x, int y) {
     // check if it's really a person
     if (isPerson(x, y)) {
-        grid[x][y].clearPoint();
+        grid[y][x].clearPoint();
     }else{
         throw std::invalid_argument("There is no person on this place.");
     }
