@@ -53,6 +53,8 @@ class Grid {
     bool isPerson(int x, int y);
     void removeCar(int x_left, int y_left, Orientation orientation);
     void removePerson(int x, int y);
+    Color semaphore_horizontal = Color(255, 0, 0);
+    Color semaphore_vertical = Color(255, 0, 0);
 };
 
 #endif
