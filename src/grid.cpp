@@ -31,6 +31,7 @@ void Point::clearPoint() {
 }
 
 Grid::Grid(int size) {
+    gridSize = size;
     std::vector<Point> row(size, Point(255, 255, 255));
     grid = std::vector<std::vector<Point>>(size, row);
     // Initialize the vectors with some values
@@ -39,6 +40,8 @@ Grid::Grid(int size) {
             grid[i][j].clearPoint();
         }
     }
+
+
 }
 
 Point Grid::getPoint(int x, int y) {
@@ -59,44 +62,54 @@ void Grid::setPoint(int x, int y, Point point) {
  * @param orientation orientation of the car - points where the rest of the car is
  */
 void Grid::createCar(int x_left, int y_left, Orientation orientation) {
-    int adjustXByOrientation;
-    int adjustYByOrientation;
+    int add_x = 1;
+    int add_y = 1;
+    int end_x = x_left;
+    int end_y = y_left;
     switch (orientation) {
         case Orientation::left: {
-            adjustXByOrientation = -1;
-            adjustYByOrientation = 1;
+            end_x += car_len;
+            end_y += car_wid;
             break;
         }
         case Orientation::right: {
-            adjustXByOrientation = 1;
-            adjustYByOrientation = -1;
+            add_x = -1;
+            add_y = -1;
+            end_x -= car_len;
+            end_y -= car_wid;
             break;
         }
         case Orientation::up: {
-            adjustXByOrientation = -1;
-            adjustYByOrientation = -1;
+            add_y = -1;
+            end_x += car_wid;
+            end_y -= car_len;
             break;
         }
         case Orientation::down: {
-            adjustXByOrientation = 1;
-            adjustYByOrientation = 1;
+            add_x = -1;
+            end_x -= car_wid;
+            end_y += car_len;
             break;
         }
     }
+
     // check if the car fits
-    for (int i = 0; i < car_len; i++) {
-        for (int j = 0; j < car_wid; j++) {
-            if(x_left + i * adjustXByOrientation < 0 || y_left + j * adjustYByOrientation < 0){
-                throw std::invalid_argument("The car does not fit - it would overflow the grid.");
-            }
-            if (!grid[y_left + j * adjustYByOrientation][x_left + i * adjustXByOrientation].isEmpty()) {
+    for (int i = y_left; i != end_y; i += add_y) {
+        for (int j = x_left; j != end_x; j += add_x) {
+            if (x_left < 0 || x_left >= gridSize || y_left < 0 || y_left >= gridSize) {
+                throw std::invalid_argument("The car is being placed out of the grid bounds.");
+                return;
+            } else if (!grid[i][j].isEmpty()) {
                 throw std::invalid_argument("The car does not fit - some 'needed' point is not empty.");
-            }
+                return;
+            }       
         }
     }
-    for (int i = 0; i < car_len; i++) {
-        for (int j = 0; j < car_wid; j++) {
-            grid[y_left + j * adjustYByOrientation][x_left + i * adjustXByOrientation].setColor(car_color);
+
+    // place the car
+    for (int i = y_left; i != end_y; i += add_y) {
+        for (int j = x_left; j != end_x; j += add_x) {
+            grid[i][j].setColor(car_color);
         }
     }
 }
@@ -109,40 +122,51 @@ void Grid::createCar(int x_left, int y_left, Orientation orientation) {
  * @param orientation orientation of the car - points where the rest of the car is
  */
 void Grid::removeCar(int x_left, int y_left, Orientation orientation) {
-    int adjustXByOrientation;
-    int adjustYByOrientation;
+    int add_x = 1;
+    int add_y = 1;
+    int end_x = x_left;
+    int end_y = y_left;
     switch (orientation) {
         case Orientation::left: {
-            adjustXByOrientation = -1;
-            adjustYByOrientation = 1;
+            end_x += car_len;
+            end_y += car_wid;
             break;
         }
         case Orientation::right: {
-            adjustXByOrientation = 1;
-            adjustYByOrientation = -1;
+            add_x = -1;
+            add_y = -1;
+            end_x -= car_len;
+            end_y -= car_wid;
             break;
         }
         case Orientation::up: {
-            adjustXByOrientation = -1;
-            adjustYByOrientation = -1;
+            add_y = -1;
+            end_x += car_wid;
+            end_y -= car_len;
             break;
         }
         case Orientation::down: {
-            adjustXByOrientation = 1;
-            adjustYByOrientation = 1;
+            add_x = -1;
+            end_x -= car_wid;
+            end_y += car_len;
             break;
         }
     }
-    for (int i = 0; i < car_len; i++) {
-        for (int j = 0; j < car_wid; j++) {
-            if (!isCar(x_left + i * adjustXByOrientation, y_left + j * adjustYByOrientation)) {
+
+    // check if there really is a car
+    for (int i = y_left; i != end_y; i += add_y) {
+        for (int j = x_left; j != end_x; j += add_x) {
+            if (!isCar(j, i)) {
                 throw std::invalid_argument("Found non car object where car should be.");
+                return;
             }
         }
     }
-    for (int i = 0; i < car_len; i++) {
-        for (int j = 0; j < car_wid; j++) {
-            grid[y_left + j * adjustYByOrientation][x_left + i * adjustXByOrientation].clearPoint();
+
+    // place the car
+    for (int i = y_left; i != end_y; i += add_y) {
+        for (int j = x_left; j != end_x; j += add_x) {
+            grid[i][j].clearPoint();
         }
     }
 }

@@ -10,7 +10,7 @@ int main() {
     std::vector<Movable> movableThings;
     for (int i = 0; i < SECONDS; i++) {
         if (i % 10 == 0) {
-            Movable tmp(person, 40, 0, 40, 99, up, &grid);
+            Movable tmp(car, 40, 10, 40, 98, up, &grid);
             movableThings.push_back(tmp);
         }
 
@@ -27,6 +27,7 @@ int main() {
 
         generateImage(grid, 100, "output/" + std::to_string(i) + ".bmp");
     }
+
 
     std::cout << "This many people have finished the journey in 250 seconds: ";
     std::cout << finished;

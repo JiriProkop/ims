@@ -21,21 +21,10 @@ Movable::Movable(MovableThing _kind, int _start_x, int _start_y, int _end_x, int
     end_y = _end_y;
     orientation = _orientation;
 
-    Orientation genOrientation; // the orientation for generating is different (reversed)
-    if (orientation == left) {
-        genOrientation = right;
-    } else if (orientation == right) {
-        genOrientation == left;
-    } else if (orientation == up) {
-        genOrientation = down;
-    } else if (orientation == down) {
-        genOrientation = up;
-    }
-
     if (kind == person) {
         grid->createPerson(x, y);
     } else if (kind == car) {
-        grid->createCar(x, y, genOrientation);
+        grid->createCar(x, y, orientation);
     }
 }
 /**
@@ -130,19 +119,8 @@ void Movable::move(Grid *grid) {
             grid->removePerson(x, y);
             grid->createPerson(new_x, new_y);
         } else if (kind == car) {
-            Orientation genOrientation; // the orientation for generating is different (reversed)
-            if (orientation == left) {
-                genOrientation = right;
-            } else if (orientation == right) {
-                genOrientation == left;
-            } else if (orientation == up) {
-                genOrientation = down;
-            } else if (orientation == down) {
-                genOrientation = up;
-            }
-
-            grid->removeCar(x, y, genOrientation);
-            grid->createCar(new_x, new_y, genOrientation);
+            grid->removeCar(x, y, orientation);
+            grid->createCar(new_x, new_y, orientation);
         }
 
         x = new_x;
@@ -154,17 +132,6 @@ void Movable::removeMovable(Grid *grid) {
     if (kind == person) {
         grid->removePerson(x, y);
     } else if (kind == car) {
-        Orientation genOrientation; // the orientation for generating is different (reversed)
-        if (orientation == left) {
-            genOrientation = right;
-        } else if (orientation == right) {
-            genOrientation == left;
-        } else if (orientation == up) {
-            genOrientation = down;
-        } else if (orientation == down) {
-            genOrientation = up;
-        
-        }
-        grid->removeCar(x, y, genOrientation);
+        grid->removeCar(x, y, orientation);
     }
 }
