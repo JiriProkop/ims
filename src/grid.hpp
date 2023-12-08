@@ -11,6 +11,8 @@ class Color {
     int g;
     int b;
     Color(int red, int green, int blue);
+    Color red();
+    Color green();
 
     bool operator==(const Color &c) {
         if (r == c.r && g == c.g && b == c.b)
@@ -53,8 +55,14 @@ class Grid {
     bool isPerson(int x, int y);
     void removeCar(int x_left, int y_left, Orientation orientation);
     void removePerson(int x, int y);
-    Color semaphore_horizontal = Color(255, 0, 0);
-    Color semaphore_vertical = Color(255, 0, 0);
+    // FIXME semafory jsou rizene v simulaci
+    Color car_semaphore_horizontal = Color(255, 0, 0);
+    Color car_semaphore_vertical = Color(255, 0, 0);
+    
+    Color pedestrian_semaphore_top = Color(255, 0, 0);
+    Color pedestrian_semaphore_bottom = Color(255, 0, 0);
+    Color pedestrian_semaphore_left = Color(255, 0, 0);
+    Color pedestrian_semaphore_right = Color(255, 0, 0);
 };
 
 #endif

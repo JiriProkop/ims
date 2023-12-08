@@ -1,8 +1,8 @@
-#include <iostream>
 #include "movable.hpp"
 #include "grid.hpp"
 #include <cstdlib>
 #include <ctime>
+#include <iostream>
 
 /**
  * Returns a random double between 0 and 1
@@ -34,6 +34,13 @@ int getPederstrianVelocity() {
     }
 }
 
+/**
+ * Get the direction where car is headed.
+ *
+ * @param orientation The orientation of the car.
+ *
+ * @return The end direction of the car.
+ */
 int getCarEndDirection(Orientation orientation) {
     double rand = getRand();
     if (rand >= 0 && rand < 0.5) {
@@ -52,35 +59,35 @@ int getCarEndDirection(Orientation orientation) {
                 return Orientation::down;
             }
         }
-    } else if(rand >= 0.5 && rand <= 0.75){
+    } else if (rand >= 0.5 && rand <= 0.75) {
         // go right
-        switch(orientation){
-            case Orientation::left:{
+        switch (orientation) {
+            case Orientation::left: {
                 return Orientation::down;
             }
-            case Orientation::right:{
+            case Orientation::right: {
                 return Orientation::up;
             }
-            case Orientation::down:{
+            case Orientation::down: {
                 return Orientation::right;
             }
-            case Orientation::up:{
+            case Orientation::up: {
                 return Orientation::left;
             }
         }
-    } else{
+    } else {
         // go left
-        switch(orientation){
-            case Orientation::left:{
+        switch (orientation) {
+            case Orientation::left: {
                 return Orientation::up;
             }
-            case Orientation::right:{
+            case Orientation::right: {
                 return Orientation::down;
             }
-            case Orientation::down:{
+            case Orientation::down: {
                 return Orientation::left;
             }
-            case Orientation::up:{
+            case Orientation::up: {
                 return Orientation::right;
             }
         }
@@ -165,7 +172,6 @@ bool Movable::checkIfClearWay(Grid *grid) {
     }
 
     // TODO only checks the left front point of the car, is it good enough?
-    // don't think so
 
     return true;
 }
@@ -229,6 +235,11 @@ void Movable::move(Grid *grid) {
     }
 }
 
+/**
+ * Removes the object from the grid.
+ *
+ * @param grid The grid.
+ */
 void Movable::removeMovable(Grid *grid) {
     if (kind == person) {
         grid->removePerson(x, y);
@@ -242,11 +253,14 @@ void Movable::removeMovable(Grid *grid) {
             genOrientation = down;
         } else if (orientation == down) {
             genOrientation = up;
-        
         }
         grid->removeCar(x, y, genOrientation);
     }
 }
+
+/**
+ * Slows down the car.
+ */
 void Movable::carSlowDown() {
     velocity -= car_speed_change;
     if (velocity < 0) {
@@ -254,30 +268,89 @@ void Movable::carSlowDown() {
     }
 }
 
+/**
+ * Speeds up the car.
+ */
 void Movable::carSpeedUp() { velocity += car_speed_change; }
 
+/**
+ * Stops the car.
+ */
 void Movable::carStop() { velocity = 0; }
 
-bool Movable::canIGo(Grid grid){
-    // check all the rules :skull
+/**
+ * Checks if the car semaphore is green.
+ *
+ * @param grid The grid.
+ * @return Returns true, if the car semaphore is green.
+ */
+bool Movable::isCarSemaphoreGreen(Grid *grid) {
+    switch (orientation) {
+        case Orientation::left:
+        case Orientation::right:
+            return grid->car_semaphore_horizontal == grid->car_semaphore_horizontal.green();
+        case Orientation::up:
+        case Orientation::down:
+            return grid->car_semaphore_vertical == grid->car_semaphore_vertical.green();
+    }
 }
 
-// with lights
-// auta: kdyz je cervena nebo jsou na chodniku jeste lidi, stuj.
-//       jinak jed
-// lidi: kdyz je zelena a nebo cervena, ale jsi jeste na chodniku, jdi
-//       jinak stuj
+/**
+ * Checks if the pedestrian semaphore is green.
+ *
+ * @param grid The grid.
+ * @return Returns true, if the pedestrian semaphore is green.
+ */
+bool Movable::isPedestrianSemaphoreGreen(Grid *grid) {
+    // TODO pozna se podle cilove sekce a orientace
+    return false;
+}
 
-// also, pokud chci projit nekudy, kde je auto, cekam
-//       stejne u auta
+/**
+ * Checks if the pedestrian is on a crosswalk.
+ *
+ * @param grid The grid.
+ * @return Returns true, if the pedestrian is on a crosswalk.
+ */
+bool Movable::amIonCrosswalk(Grid *grid) {
+    // TODO pozna se podle cilove sekce a orientace
+    return false;
+}
 
-// kdyz chci jit nekam, kam chce uz also nekdo jit, random se vybere kdo pujde.
+/**
+ * Check all the rules with semaphores.
+ *
+ * @param grid The grid.
+ * @return Returns true, if the object can go.
+ */
+bool Movable::canIGoWithSemaphores(Grid *grid) {
+    // check all the rules :skull
+    if (!checkIfClearWay(grid)) {
+        return false;
+    }
+    if (kind == car && isCarSemaphoreGreen(grid)) {
+        return true;
+    } else if (kind == person && (isPedestrianSemaphoreGreen(grid) || amIonCrosswalk(grid))) {
+        // kdyz chci jit nekam, kam chce uz also nekdo jit, random se vybere kdo pujde.
+        return true;
+    }
+    return false;
+}
 
-// without lights
-// crossing for pedestrians or cars kdyz nejsou na hlavni:
-// l_veh - vzdalenost od auta od prechodu nebo od auta
-// v_veh - budouci nebo stavajici rychlost auta
-// l_ped - vzdalenost chodce od konce prechodu/pruhu
-// v_ped - ocekavan rychlost chodce/auta. Da se pouzit prumer.
-// t - podle akceptace chodce/auta, u chodce se muze urcit podle agresivity chodce
-// ROVNICE: l_veh/v_veh - l_ped/v_ped >= t
+/**
+ * Check all the rules without semaphores.
+ *
+ * @param grid The grid.
+ * @return Returns true, if the object can go.
+ */
+bool Movable::canIGoWithoutSemaphores(Grid *grid) {
+    // TODO
+    return true;
+    // crossing for pedestrians or cars kdyz nejsou na hlavni:
+    // l_veh - vzdalenost od auta od prechodu nebo od auta
+    // v_veh - budouci nebo stavajici rychlost auta
+    // l_ped - vzdalenost chodce od konce prechodu/pruhu
+    // v_ped - ocekavan rychlost chodce/auta. Da se pouzit prumer.
+    // t - podle akceptace chodce/auta, u chodce se muze urcit podle agresivity chodce
+    // ROVNICE: l_veh/v_veh - l_ped/v_ped >= t
+}
