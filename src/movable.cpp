@@ -1,3 +1,4 @@
+#include <iostream>
 #include "grid.hpp"
 #include "movable.hpp"
 
@@ -12,7 +13,7 @@
  * @param _orientation The orientation of the object.
  * @param grid The grid to create the object in.
 */
-Movable::Movable(MovableThing _kind, int _start_x, int _start_y, int _end_x, int _end_y, Orientation _orientation, Grid grid) {
+Movable::Movable(MovableThing _kind, int _start_x, int _start_y, int _end_x, int _end_y, Orientation _orientation, Grid *grid) {
     kind = _kind;
     x = _start_x;
     y = _start_y;
@@ -20,10 +21,21 @@ Movable::Movable(MovableThing _kind, int _start_x, int _start_y, int _end_x, int
     end_y = _end_y;
     orientation = _orientation;
 
+    Orientation genOrientation; // the orientation for generating is different (reversed)
+    if (orientation == left) {
+        genOrientation = right;
+    } else if (orientation == right) {
+        genOrientation == left;
+    } else if (orientation == up) {
+        genOrientation = down;
+    } else if (orientation == down) {
+        genOrientation = up;
+    }
+
     if (kind == person) {
-        grid.createPerson(x, y);
+        grid->createPerson(x, y);
     } else if (kind == car) {
-        grid.createCar(x, y, orientation);
+        grid->createCar(x, y, genOrientation);
     }
 }
 /**
@@ -33,53 +45,50 @@ Movable::Movable(MovableThing _kind, int _start_x, int _start_y, int _end_x, int
  * 
  * @return Returns a boolean (true if the way is clear).
 */
-bool Movable::checkIfClearWay(Grid grid) {
-    bool clear = true; // default value
-
+bool Movable::checkIfClearWay(Grid *grid) {
     // how far should we check the space
     int check_end_x = x;
     int check_end_y = y;
 
-    int space = 0;
+    int space = 1;
     if (kind == person) {
-        space = SPACE_BETWEEN_PEOPLE;
+        space += SPACE_BETWEEN_PEOPLE;
     } else {
-        space = SPACE_BETWEEN_CARS;
+        space += SPACE_BETWEEN_CARS;
     }
 
-    int add = 0;
+    int add_x = 0;
+    int add_y = 0;
 
     if (orientation == left) {
         check_end_x -= space;
-        add = -1;
+        add_x = -1;
     } else if (orientation == right) {
         check_end_x += space;
-        add = 1;
+        add_x = 1;
     } else if (orientation == up) {
         check_end_y += space;
-        add = 1;
+        add_y = 1;
     } else if (orientation == down) {
         check_end_y -= space;
-        add = -1;
+        add_y = -1;
     }
 
-    for (int i = x; i != check_end_x; i += add) {
-        if (!grid.getPoint(i, check_end_y).isEmpty()) {
-            clear = false;
-            break;
+    for (int i = x + add_x; i != check_end_x; i += add_x) {
+        if (!grid->getPoint(i, check_end_y).isEmpty()) {
+            return false;
         }
     }
 
-    for (int j = y; j != check_end_y; j += add) {
-        if (!grid.getPoint(check_end_x, j).isEmpty()) {
-            clear = false;
-            break;
+    for (int j = y + add_y; j != check_end_y; j += add_y) {
+        if (!grid->getPoint(check_end_x, j).isEmpty()) {
+            return false;
         }
     }
 
     // TODO only checks the left front point of the car, is it good enough?
 
-    return clear;
+    return true;
 }
 
 /**
@@ -102,7 +111,7 @@ bool Movable::checkIfFinished() {
  * 
  * @param grid The grid.
 */
-void Movable::move(Grid grid) {
+void Movable::move(Grid *grid) {
     if (checkIfClearWay(grid) && !checkIfFinished()) {
         int new_x = x;
         int new_y = y;
@@ -118,11 +127,44 @@ void Movable::move(Grid grid) {
         }
 
         if (kind == person) {
-            grid.removePerson(x, y);
-            grid.createPerson(new_x, new_y);
+            grid->removePerson(x, y);
+            grid->createPerson(new_x, new_y);
         } else if (kind == car) {
-            grid.removeCar(x, y, orientation);
-            grid.createCar(new_x, new_y, orientation);
+            Orientation genOrientation; // the orientation for generating is different (reversed)
+            if (orientation == left) {
+                genOrientation = right;
+            } else if (orientation == right) {
+                genOrientation == left;
+            } else if (orientation == up) {
+                genOrientation = down;
+            } else if (orientation == down) {
+                genOrientation = up;
+            }
+
+            grid->removeCar(x, y, genOrientation);
+            grid->createCar(new_x, new_y, genOrientation);
         }
+
+        x = new_x;
+        y = new_y;
+    }
+}
+
+void Movable::removeMovable(Grid *grid) {
+    if (kind == person) {
+        grid->removePerson(x, y);
+    } else if (kind == car) {
+        Orientation genOrientation; // the orientation for generating is different (reversed)
+        if (orientation == left) {
+            genOrientation = right;
+        } else if (orientation == right) {
+            genOrientation == left;
+        } else if (orientation == up) {
+            genOrientation = down;
+        } else if (orientation == down) {
+            genOrientation = up;
+        
+        }
+        grid->removeCar(x, y, genOrientation);
     }
 }
