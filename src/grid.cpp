@@ -31,7 +31,7 @@ void Point::clearPoint() {
 }
 
 Grid::Grid(int size) {
-    std::vector<Point> row(size, Point(0, 0, 0));
+    std::vector<Point> row(size, Point(255, 255, 255));
     grid = std::vector<std::vector<Point>>(size, row);
     // Initialize the vectors with some values
     for (int i = 0; i < size; ++i) {

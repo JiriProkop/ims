@@ -19,10 +19,11 @@ class Movable {
     bool finished;
 
   public:
-    Movable(MovableThing _kind, int _start_x, int _start_y, int _end_x, int _end_y, Orientation _orientation, Grid grid);
-    bool checkIfClearWay(Grid grid);
+    Movable(MovableThing _kind, int _start_x, int _start_y, int _end_x, int _end_y, Orientation _orientation, Grid *grid);
+    bool checkIfClearWay(Grid *grid);
     bool checkIfFinished();
-    void move(Grid grid);
+    void move(Grid *grid);
+    void removeMovable(Grid *grid);
 };
 
 #endif

@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+.vscode
+crossroad
+output/*bmp
