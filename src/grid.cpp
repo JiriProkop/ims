@@ -1,4 +1,5 @@
 #include "grid.hpp"
+#include <iostream>
 #include <stdexcept>
 #include <vector>
 
@@ -32,6 +33,12 @@ void Point::clearPoint() {
 Grid::Grid(int size) {
     std::vector<Point> row(size, Point(0, 0, 0));
     grid = std::vector<std::vector<Point>>(size, row);
+    // Initialize the vectors with some values
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < size; ++j) {
+            grid[i][j].clearPoint();
+        }
+    }
 }
 
 Point Grid::getPoint(int x, int y) {
@@ -79,8 +86,11 @@ void Grid::createCar(int x_left, int y_left, Orientation orientation) {
     // check if the car fits
     for (int i = 0; i < car_len; i++) {
         for (int j = 0; j < car_wid; j++) {
+            if(x_left + i * adjustXByOrientation < 0 || y_left + j * adjustYByOrientation < 0){
+                throw std::invalid_argument("The car does not fit - it would overflow the grid.");
+            }
             if (!grid[x_left + i * adjustXByOrientation][y_left + j * adjustYByOrientation].isEmpty()) {
-                throw std::invalid_argument("The car does not fit.");
+                throw std::invalid_argument("The car does not fit - some 'needed' point is not empty.");
             }
         }
     }

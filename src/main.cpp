@@ -5,7 +5,7 @@
 int main() {
     Grid grid(100);
 
-    grid.createCar(5,5,left); // it crashes here
+    grid.createCar(10,10,left); // it crashes here
 
     generateImage(grid, 100, "output/output.bmp");
 }
