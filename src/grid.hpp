@@ -37,6 +37,7 @@ class Point {
 class Grid {
   private:
     std::vector<std::vector<Point>> grid;
+    int gridSize;
     const int car_len = 8;
     const int car_wid = 4;
     const Color car_color = Color(255, 0, 0);

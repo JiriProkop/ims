@@ -38,7 +38,6 @@ void generateImage(Grid grid, int size, std::string fileName) {
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
                 // load the colors from the grid
-                // TODO [y][x] or reversed?
                 uint8_t red = grid.getPoint(x, y).getColor().r;
                 uint8_t green = grid.getPoint(x, y).getColor().g;
                 uint8_t blue = grid.getPoint(x, y).getColor().b;
