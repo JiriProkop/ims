@@ -1,5 +1,11 @@
 #include "grid.hpp"
+#include "movable.hpp"
+#include "image.hpp"
 
 int main() {
-    return 0;
+    Grid grid(100);
+
+    grid.createCar(5,5,left); // it crashes here
+
+    generateImage(grid, 100, "output/output.bmp");
 }
