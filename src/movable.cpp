@@ -92,6 +92,7 @@ int getCarEndDirection(Orientation orientation) {
             }
         }
     }
+    return 0;
 }
 
 /**
@@ -193,9 +194,9 @@ bool Movable::checkIfFinished() {
 
 /**
  * Checks if the way is clear (and not finished) and if so, move the object by one point.
- *
+ * 
  * @param grid The grid.
- */
+*/
 void Movable::move(Grid *grid) {
     if (checkIfClearWay(grid) && !checkIfFinished()) {
         int new_x = x;
@@ -215,19 +216,8 @@ void Movable::move(Grid *grid) {
             grid->removePerson(x, y);
             grid->createPerson(new_x, new_y);
         } else if (kind == car) {
-            Orientation genOrientation; // the orientation for generating is different (reversed)
-            if (orientation == left) {
-                genOrientation = right;
-            } else if (orientation == right) {
-                genOrientation == left;
-            } else if (orientation == up) {
-                genOrientation = down;
-            } else if (orientation == down) {
-                genOrientation = up;
-            }
-
-            grid->removeCar(x, y, genOrientation);
-            grid->createCar(new_x, new_y, genOrientation);
+            grid->removeCar(x, y, orientation);
+            grid->createCar(new_x, new_y, orientation);
         }
 
         x = new_x;
@@ -244,17 +234,7 @@ void Movable::removeMovable(Grid *grid) {
     if (kind == person) {
         grid->removePerson(x, y);
     } else if (kind == car) {
-        Orientation genOrientation; // the orientation for generating is different (reversed)
-        if (orientation == left) {
-            genOrientation = right;
-        } else if (orientation == right) {
-            genOrientation == left;
-        } else if (orientation == up) {
-            genOrientation = down;
-        } else if (orientation == down) {
-            genOrientation = up;
-        }
-        grid->removeCar(x, y, genOrientation);
+        grid->removeCar(x, y, orientation);
     }
 }
 
@@ -293,6 +273,7 @@ bool Movable::isCarSemaphoreGreen(Grid *grid) {
         case Orientation::down:
             return grid->car_semaphore_vertical == grid->car_semaphore_vertical.green();
     }
+    return false; // to not get a warning
 }
 
 /**

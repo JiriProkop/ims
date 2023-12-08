@@ -1,25 +1,59 @@
 #include "simulation.hpp"
+#include "iostream"
 
-
-Simulation::Simulation(bool signalizedIntersection) { this->signalizedIntersection = signalizedIntersection; }
+/**
+ * Creates a new simulation object.
+ * 
+ * @param signalizedIntersection Whether the intersection is signalized or not.
+*/
+Simulation::Simulation(bool signalizedIntersection) {
+    this->signalizedIntersection = signalizedIntersection;
+    generateCrossroadBackgroud(&grid);
+}
 
 void Simulation::makeStep() {
-    if (signalizedIntersection) {
-        signalizedIntersectionRules();
-    } else {
-        unsignalizedIntersectionRules();
+    // TODO
+}
+
+/**
+ * Runs the simulation.
+*/
+void Simulation::Run(){
+    int SECONDS = 250;
+
+    int finished = 0;
+    std::vector<Movable> movableThings;
+    for (int i = 0; i < SECONDS; i++) {
+        if (i % 16 == 0) {
+            try {
+                Movable tmp(car, 10, 54, 118, 54, right, &grid);
+                movableThings.push_back(tmp);
+            } catch (const std::exception& e) { }
+        }
+
+
+        for (size_t j = 0; j < movableThings.size(); j++) {
+            if (movableThings[j].checkIfFinished()) {
+                finished++;
+                movableThings[j].removeMovable(&grid);
+
+                //FIXME: this is causing some error
+                // movableThings.erase(movableThings.begin() + j);
+            } else {
+                movableThings[j].move(&grid);
+            }
+        }
+
+        generateImage(grid, DEFAULT_IMAGE_SIZE, "output/" + std::to_string(i) + ".bmp");
     }
+
+
+    std::cout << "This many people have finished the journey in 250 seconds: ";
+    std::cout << finished;
+    std::cout << "\n";
 }
 
-
-
-void Simulation::signalizedIntersectionRules() {
-    // TODO
-}
-
-void Simulation::unsignalizedIntersectionRules() {
-    // TODO
-}
+// RULES:
 // with lights
 // auta: kdyz je cervena nebo jsou na chodniku jeste lidi, stuj.
 //       jinak jed
