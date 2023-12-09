@@ -41,7 +41,7 @@ int getPederstrianVelocity() {
  *
  * @return The end direction of the car.
  */
-int getCarEndDirection(Orientation orientation) {
+Orientation getCarEndDirection(Orientation orientation) {
     double rand = getRand();
     if (rand >= 0 && rand < 0.5) {
         // go straight
@@ -92,7 +92,76 @@ int getCarEndDirection(Orientation orientation) {
             }
         }
     }
-    return 0;
+    return Orientation::left; // to not get a warning
+}
+
+bool isInPedZone1(int x, int y) {
+    const int x_start = 6;
+    const int x_end = 16;
+    const int y_start = 56;
+    const int y_end = 66;
+    return x >= x_start && x <= x_end && y >= y_start && y <= y_end;
+}
+
+bool isInPedZone2(int x, int y) {
+    const int x_start = 52;
+    const int x_end = 62;
+    const int y_start = 56;
+    const int y_end = 66;
+    return x >= x_start && x <= x_end && y >= y_start && y <= y_end;
+}
+
+bool isInPedZone3(int x, int y) {
+    const int x_start = 6;
+    const int x_end = 16;
+    const int y_start = 14;
+    const int y_end = 24;
+    return x >= x_start && x <= x_end && y >= y_start && y <= y_end;
+}
+
+bool isInPedZone4(int x, int y) {
+    const int x_start = 52;
+    const int x_end = 62;
+    const int y_start = 14;
+    const int y_end = 24;
+    return x >= x_start && x <= x_end && y >= y_start && y <= y_end;
+}
+
+std::function<bool(int, int)> Movable::getPedEndZone(int start_x, int start_y) {
+    double rand = getRand();
+    if (isInPedZone1(start_x, start_y)) {
+        if (rand <= 0.5) {
+            orientation = Orientation::right;
+            return isInPedZone2;
+        } else {
+            orientation = Orientation::down;
+            return isInPedZone3;
+        }
+    } else if (isInPedZone2(start_x, start_y)) {
+        if (rand <= 0.5) {
+            orientation = Orientation::left;
+            return isInPedZone1;
+        } else {
+            orientation = Orientation::down;
+            return isInPedZone4;
+        }
+    } else if (isInPedZone3(start_x, start_y)) {
+        if (rand <= 0.5) {
+            orientation = Orientation::right;
+            return isInPedZone4;
+        } else {
+            orientation = Orientation::up;
+            return isInPedZone1;
+        }
+    } else if (isInPedZone4(start_x, start_y)) {
+        if (rand <= 0.5) {
+            orientation = Orientation::left;
+            return isInPedZone3;
+        } else {
+            orientation = Orientation::up;
+            return isInPedZone2;
+        }
+    }
 }
 
 /**
@@ -115,11 +184,11 @@ Movable::Movable(MovableThing _kind, int _start_x, int _start_y, int _end_x, int
     orientation = _orientation;
     aggressivity = getRand();
     if (kind == person) {
-        // TODO get person's end zone
         grid->createPerson(x, y);
         velocity = getPederstrianVelocity();
+        std::function<bool(int, int)> isPedInEndZone = getPedEndZone(x, y);
     } else if (kind == car) {
-        car_end_direction = getCarEndDirection(orientation);
+        orientation = getCarEndDirection(orientation);
         grid->createCar(x, y, orientation);
         velocity = initial_car_velocity;
     }
@@ -184,9 +253,12 @@ bool Movable::checkIfClearWay(Grid *grid) {
  */
 bool Movable::checkIfFinished() {
     bool finished = false; // default value
-    // TODO if person, check zones if in dest zone.
-    if (x == end_x && y == end_y) {
-        finished = true;
+    if (kind == person) {
+        finished = isPedInEndZone(x, y);
+    } else {
+        if (x == end_x && y == end_y) {
+            finished = true;
+        }
     }
 
     return finished;
@@ -194,9 +266,9 @@ bool Movable::checkIfFinished() {
 
 /**
  * Checks if the way is clear (and not finished) and if so, move the object by one point.
- * 
+ *
  * @param grid The grid.
-*/
+ */
 void Movable::move(Grid *grid) {
     if (checkIfClearWay(grid) && !checkIfFinished()) {
         int new_x = x;
