@@ -9,6 +9,14 @@ Color::Color(int red, int green, int blue) {
     b = blue;
 }
 
+Color Color::red() {
+    return Color(255, 0, 0);
+}
+
+Color Color::green() {
+    return Color(0, 255, 0);
+}
+
 Point::Point(int bg_red, int bg_green, int bg_blue) {
     bool empty = true;
 
