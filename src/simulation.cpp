@@ -10,10 +10,26 @@
 Simulation::Simulation(bool signalizedIntersection) {
     this->signalizedIntersection = signalizedIntersection;
     generateCrossroadBackgroud(&grid);
+    finishedPedestrians = 0;
+    finishedCars = 0;
 }
 
-void Simulation::makeStep() {
-    // TODO
+void Simulation::makeStep(std::vector<Movable> *movableThings) {
+    for (size_t i = 0; i < movableThings->size(); i++) {
+        if (movableThings->at(i).checkIfFinished()) {
+            movableThings->at(i).removeMovable(&grid);
+
+            if (movableThings->at(i).getKind() == person) {
+                finishedPedestrians++;
+            } else if (movableThings->at(i).getKind() == car) {
+                finishedCars++;
+            }
+
+            movableThings->erase(movableThings->begin() + i);
+        } else {
+            movableThings->at(i).move(&grid, signalizedIntersection);
+        }
+    }
 }
 
 /**
@@ -22,7 +38,6 @@ void Simulation::makeStep() {
 void Simulation::Run(){
     int SECONDS = 250;
 
-    int finished = 0;
     std::vector<Movable> movableThings;
     for (int i = 0; i < SECONDS; i++) {
         if (i % 16 == 0) {
@@ -32,25 +47,15 @@ void Simulation::Run(){
             } catch (const std::exception& e) { }
         }
 
+        makeStep(&movableThings);
 
-        for (size_t j = 0; j < movableThings.size(); j++) {
-            if (movableThings[j].checkIfFinished()) {
-                finished++;
-                movableThings[j].removeMovable(&grid);
-
-                //FIXME: this is causing some error
-                movableThings.erase(movableThings.begin() + j);
-            } else {
-                movableThings[j].move(&grid);
-            }
-        }
 
         generateImage(grid, DEFAULT_IMAGE_SIZE, "output/" + std::to_string(i) + ".bmp");
     }
 
 
     std::cout << "This many people have finished the journey in 250 seconds: ";
-    std::cout << finished;
+    std::cout << finishedCars;
     std::cout << "\n";
 }
 

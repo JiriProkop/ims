@@ -24,18 +24,20 @@ class Movable {
     static const int car_speed_change = 4;      // 2 m/s^2
     std::function<bool(int, int)> getPedEndZone(int start_x, int start_y);
     std::function<bool(int, int)> isPedInEndZone;
-    bool isCarSemaphoreGreen(Grid *grid);
     bool isPedestrianSemaphoreGreen(Grid *grid);
     bool amIonCrosswalk(Grid *grid);
 
   public:
     Movable(MovableThing _kind, int _start_x, int _start_y, int _end_x, int _end_y, Orientation _orientation, Grid *grid);
     bool checkIfClearWay(Grid *grid);
+    MovableThing getKind();
+    Orientation getOrientation();
     bool checkIfFinished();
     void carSlowDown();
     void carSpeedUp();
     void carStop();
-    void move(Grid *grid);
+    void move(Grid *grid, bool signalized);
+    bool isCarSemaphoreGreen(Grid *grid);
     void removeMovable(Grid *grid);
     bool canIGoWithSemaphores(Grid *grid);
     bool canIGoWithoutSemaphores(Grid *grid);
