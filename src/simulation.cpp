@@ -1,3 +1,4 @@
+#include <vector>
 #include "simulation.hpp"
 #include "iostream"
 
@@ -38,7 +39,7 @@ void Simulation::Run(){
                 movableThings[j].removeMovable(&grid);
 
                 //FIXME: this is causing some error
-                // movableThings.erase(movableThings.begin() + j);
+                movableThings.erase(movableThings.begin() + j);
             } else {
                 movableThings[j].move(&grid);
             }
