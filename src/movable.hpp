@@ -1,4 +1,5 @@
 #include "grid.hpp"
+#include <functional>
 
 #ifndef MOVABLE_HPP
 #define MOVABLE_HPP
@@ -19,9 +20,10 @@ class Movable {
     bool finished;
     int aggressivity;
     int velocity;
-    int car_end_direction;
     static const int initial_car_velocity = 14; // 25 km/h ~= 7 m/s
     static const int car_speed_change = 4;      // 2 m/s^2
+    std::function<bool(int, int)> getPedEndZone(int start_x, int start_y);
+    std::function<bool(int, int)> isPedInEndZone;
     bool isCarSemaphoreGreen(Grid *grid);
     bool isPedestrianSemaphoreGreen(Grid *grid);
     bool amIonCrosswalk(Grid *grid);
