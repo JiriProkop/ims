@@ -34,96 +34,35 @@ int getPederstrianVelocity() {
     }
 }
 
-/**
- * Get the direction where car is headed.
- *
- * @param orientation The orientation of the car.
- *
- * @return The end direction of the car.
- */
-Orientation getCarEndDirection(Orientation orientation) {
-    double rand = getRand();
-    if (rand >= 0 && rand < 0.5) {
-        // go straight
-        switch (orientation) {
-            case Orientation::left: {
-                return Orientation::right;
-            }
-            case Orientation::right: {
-                return Orientation::left;
-            }
-            case Orientation::down: {
-                return Orientation::up;
-            }
-            case Orientation::up: {
-                return Orientation::down;
-            }
-        }
-    } else if (rand >= 0.5 && rand <= 0.75) {
-        // go right
-        switch (orientation) {
-            case Orientation::left: {
-                return Orientation::down;
-            }
-            case Orientation::right: {
-                return Orientation::up;
-            }
-            case Orientation::down: {
-                return Orientation::right;
-            }
-            case Orientation::up: {
-                return Orientation::left;
-            }
-        }
-    } else {
-        // go left
-        switch (orientation) {
-            case Orientation::left: {
-                return Orientation::up;
-            }
-            case Orientation::right: {
-                return Orientation::down;
-            }
-            case Orientation::down: {
-                return Orientation::left;
-            }
-            case Orientation::up: {
-                return Orientation::right;
-            }
-        }
-    }
-    return Orientation::left; // to not get a warning
-}
-
 bool isInPedZone1(int x, int y) {
-    const int x_start = 6;
-    const int x_end = 16;
-    const int y_start = 56;
-    const int y_end = 66;
+    const int x_start = 30;
+    const int x_end = 40;
+    const int y_start = 82;
+    const int y_end = 92;
     return x >= x_start && x <= x_end && y >= y_start && y <= y_end;
 }
 
 bool isInPedZone2(int x, int y) {
-    const int x_start = 52;
-    const int x_end = 62;
-    const int y_start = 56;
-    const int y_end = 66;
+    const int x_start = 76;
+    const int x_end = 86;
+    const int y_start = 82;
+    const int y_end = 92;
     return x >= x_start && x <= x_end && y >= y_start && y <= y_end;
 }
 
 bool isInPedZone3(int x, int y) {
-    const int x_start = 6;
-    const int x_end = 16;
-    const int y_start = 14;
-    const int y_end = 24;
+    const int x_start = 30;
+    const int x_end = 40;
+    const int y_start = 32;
+    const int y_end = 42;
     return x >= x_start && x <= x_end && y >= y_start && y <= y_end;
 }
 
 bool isInPedZone4(int x, int y) {
-    const int x_start = 52;
-    const int x_end = 62;
-    const int y_start = 14;
-    const int y_end = 24;
+    const int x_start = 76;
+    const int x_end = 86;
+    const int y_start = 32;
+    const int y_end = 42;
     return x >= x_start && x <= x_end && y >= y_start && y <= y_end;
 }
 
@@ -132,36 +71,77 @@ std::function<bool(int, int)> Movable::getPedEndZone(int start_x, int start_y) {
     if (isInPedZone1(start_x, start_y)) {
         if (rand <= 0.5) {
             orientation = Orientation::right;
+            pedEndzone = 2;
             return isInPedZone2;
         } else {
             orientation = Orientation::down;
+            pedEndzone = 3;
             return isInPedZone3;
         }
     } else if (isInPedZone2(start_x, start_y)) {
         if (rand <= 0.5) {
             orientation = Orientation::left;
+            pedEndzone = 1;
             return isInPedZone1;
         } else {
             orientation = Orientation::down;
+            pedEndzone = 4;
             return isInPedZone4;
         }
     } else if (isInPedZone3(start_x, start_y)) {
         if (rand <= 0.5) {
             orientation = Orientation::right;
+            pedEndzone = 4;
             return isInPedZone4;
         } else {
             orientation = Orientation::up;
+            pedEndzone = 1;
             return isInPedZone1;
         }
     } else if (isInPedZone4(start_x, start_y)) {
         if (rand <= 0.5) {
             orientation = Orientation::left;
+            pedEndzone = 3;
             return isInPedZone3;
         } else {
             orientation = Orientation::up;
+            pedEndzone = 2;
             return isInPedZone2;
         }
     }
+    return isInPedZone1; // to not get a warning
+}
+
+void Movable::getCoordinationsForPedestrian(Grid *grid) {
+    int spawn_x_start;
+    int spawn_y_start;
+    double rand = getRand();
+    if (rand >= 0 && rand < 0.2) {
+        // top left spawn
+        spawn_x_start = 30;
+        spawn_y_start = 82;
+    } else if (rand >= 0.2 && rand < 0.4) {
+        // botom right spawn
+        spawn_x_start = 76;
+        spawn_y_start = 32;
+    } else if (rand >= 0.4 && rand < 0.7) {
+        // top right spawn
+        spawn_x_start = 76;
+        spawn_y_start = 82;
+    } else {
+        // bottom left spawn
+        spawn_x_start = 30;
+        spawn_y_start = 32;
+    }
+
+    int rand_x = getRand() * 10;
+    int rand_y = getRand() * 10;
+    while (!grid->getPoint(rand_x + spawn_x_start, rand_y + spawn_y_start).isEmpty()) {
+        rand_x = getRand() * 10;
+        rand_y = getRand() * 10;
+    }
+    x = rand_x + spawn_x_start;
+    y = rand_y + spawn_y_start;
 }
 
 /**
@@ -184,11 +164,11 @@ Movable::Movable(MovableThing _kind, int _start_x, int _start_y, int _end_x, int
     orientation = _orientation;
     aggressivity = getRand();
     if (kind == person) {
+        getCoordinationsForPedestrian(grid);
         grid->createPerson(x, y);
         velocity = getPederstrianVelocity();
-        std::function<bool(int, int)> isPedInEndZone = getPedEndZone(x, y);
+        isPedInEndZone = getPedEndZone(x, y);
     } else if (kind == car) {
-        // orientation = getCarEndDirection(orientation);
         grid->createCar(x, y, orientation);
         velocity = initial_car_velocity;
     }
@@ -354,6 +334,33 @@ void Movable::move(Grid *grid, bool signalized) {
                 new_y -= 1;
             }
 
+        // make a turn
+        switch (orientation) {
+            case Orientation::left:
+            case Orientation::right:
+                if (new_x == end_x && new_y != end_y) {
+                    std::cout << "before turn"
+                              << "\n";
+                    if (new_y < end_y) {
+                        orientation = up;
+                    } else {
+                        orientation = down;
+                    }
+                }
+                break;
+            case Orientation::up:
+            case Orientation::down:
+                if (new_y == end_y && new_x != end_x) {
+                    std::cout << "before turn"
+                              << "\n";
+                    if (new_x < end_x) {
+                        orientation = right;
+                    } else {
+                        orientation = left;
+                    }
+                }
+                break;
+        }
             if (kind == person) {
                 grid->removePerson(x, y);
                 grid->createPerson(new_x, new_y);
@@ -445,7 +452,22 @@ bool Movable::isCarSemaphoreGreen(Grid *grid) {
  * @return Returns true, if the pedestrian semaphore is green.
  */
 bool Movable::isPedestrianSemaphoreGreen(Grid *grid) {
-    // TODO pozna se podle cilove sekce a orientace
+    switch (orientation) {
+        case Orientation::left:
+        case Orientation::right:
+            if (pedEndzone == 1 || pedEndzone == 2) {
+                return grid->pedestrian_semaphore_top == grid->pedestrian_semaphore_top.green();
+            } else if (pedEndzone == 3 || pedEndzone == 4) {
+                return grid->pedestrian_semaphore_bottom == grid->pedestrian_semaphore_bottom.green();
+            }
+        case Orientation::up:
+        case Orientation::down:
+            if (pedEndzone == 1 || pedEndzone == 3) {
+                return grid->pedestrian_semaphore_left == grid->pedestrian_semaphore_left.green();
+            } else if (pedEndzone == 2 || pedEndzone == 4) {
+                return grid->pedestrian_semaphore_right == grid->pedestrian_semaphore_right.green();
+            }
+    }
     return false;
 }
 
@@ -456,7 +478,48 @@ bool Movable::isPedestrianSemaphoreGreen(Grid *grid) {
  * @return Returns true, if the pedestrian is on a crosswalk.
  */
 bool Movable::amIonCrosswalk(Grid *grid) {
-    // TODO pozna se podle cilove sekce a orientace
+    if (y >= 28 && y <= 48) {
+        if (x >= 6 && x <= 16) {
+            // left crosswalk
+            return true;
+        } else if (x >= 52 && x <= 62) {
+            // right crosswalk
+            return true;
+        }
+    } else if (x >= 24 && x <= 48) {
+        if (y >= 14 && y <= 24) {
+            // bottom crosswalk
+            return true;
+        } else if (y >= 56 && y <= 66) {
+            // top crosswalk
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Movable::amIRightBeforeCrosswalk(Grid *grid) {
+    int d = 0;
+
+    if (kind == car) {
+        if (x < 30) {
+            d = 30 - x;
+        } else if (x > 86) {
+            d = x - 86;
+        } else if(y < 32) {
+            d = 32 - y;
+        } else if(y > 92) {
+            d = y - 92;
+        }
+        return d <= SPACE_BETWEEN_CARS;
+    } else if (kind == person) {
+        if(x < 48){
+            d = 48 - x;
+        }else if(x > 72){
+            d = x - 72;
+        }
+        return d <= SPACE_BETWEEN_PEOPLE;
+    }
     return false;
 }
 
@@ -471,11 +534,22 @@ bool Movable::canIGoWithSemaphores(Grid *grid) {
     if (!checkIfClearWay(grid)) {
         return false;
     }
-    if (kind == car && isCarSemaphoreGreen(grid)) {
-        return true;
-    } else if (kind == person && (isPedestrianSemaphoreGreen(grid) || amIonCrosswalk(grid))) {
+    if (kind == car) {
+        if (isCarSemaphoreGreen(grid)) {
+            return true;
+        }
+        // i can go to the crosswalk, even if it's red
+        if(!amIRightBeforeCrosswalk(grid)){
+            return true;
+        }
+    } else if (kind == person) {
+        if (isPedestrianSemaphoreGreen(grid) || amIonCrosswalk(grid)) {
+            return true;
+        }
+        if(!amIRightBeforeCrosswalk(grid)){
+            return true;
+        }
         // kdyz chci jit nekam, kam chce uz also nekdo jit, random se vybere kdo pujde.
-        return true;
     }
     return false;
 }

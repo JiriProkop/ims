@@ -10,10 +10,11 @@ class Simulation {
         bool signalizedIntersection;
         Grid grid = Grid(DEFAULT_IMAGE_SIZE);
         Grid nextStepGrid = Grid(DEFAULT_IMAGE_SIZE);
+        void semaphoreRotation(int second);
         int finishedCars;
         int finishedPedestrians;
 
-    public:
+      public:
         Simulation(bool signalizedIntersection);
         void makeStep(std::vector<Movable> *movableThings);
         void Run();

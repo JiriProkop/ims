@@ -15,6 +15,7 @@ Simulation::Simulation(bool signalizedIntersection) {
 }
 
 void Simulation::makeStep(std::vector<Movable> *movableThings) {
+    // TODO semaphore rotation
     for (size_t i = 0; i < movableThings->size(); i++) {
         if (movableThings->at(i).checkIfFinished()) {
             movableThings->at(i).removeMovable(&grid);
@@ -30,6 +31,10 @@ void Simulation::makeStep(std::vector<Movable> *movableThings) {
             movableThings->at(i).move(&grid, signalizedIntersection);
         }
     }
+}
+
+void Simulation::semaphoreRotation(int second) {
+    // TODO
 }
 
 /**
