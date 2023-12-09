@@ -188,11 +188,28 @@ Movable::Movable(MovableThing _kind, int _start_x, int _start_y, int _end_x, int
         velocity = getPederstrianVelocity();
         std::function<bool(int, int)> isPedInEndZone = getPedEndZone(x, y);
     } else if (kind == car) {
-        orientation = getCarEndDirection(orientation);
+        // orientation = getCarEndDirection(orientation);
         grid->createCar(x, y, orientation);
         velocity = initial_car_velocity;
     }
 }
+
+/**
+ * Returns the type of the movable object.
+ * 
+*/
+MovableThing Movable::getKind() {
+    return kind;
+}
+
+/**
+ * Returns the orientation of the object.
+ * 
+*/
+Orientation Movable::getOrientation() {
+    return orientation;
+}
+
 /**
  * Checks if the way for the object is clear
  *
@@ -269,31 +286,104 @@ bool Movable::checkIfFinished() {
  *
  * @param grid The grid.
  */
-void Movable::move(Grid *grid) {
-    if (checkIfClearWay(grid) && !checkIfFinished()) {
-        int new_x = x;
-        int new_y = y;
+void Movable::move(Grid *grid, bool signalized) {
+    const int PURKYNOVA_START = 48;
+    const int PURKYNOVA_WIDTH = 24;
+    const int SKACELOVA_START = 46;
+    const int SKACELOVA_WIDTH = 28;
 
-        if (orientation == left) {
-            new_x -= 1;
-        } else if (orientation == right) {
-            new_x += 1;
-        } else if (orientation == up) {
-            new_y += 1;
-        } else if (orientation == down) {
-            new_y -= 1;
+    // stop if obejct if it cannot move
+    // TODO jenom pro krizovatky se semafory
+    if (kind == car) {
+        bool canIGo = false;
+        if (signalized) {
+            canIGo = canIGoWithSemaphores(grid);
+        } else {
+            canIGo = canIGoWithoutSemaphores(grid);
         }
 
-        if (kind == person) {
-            grid->removePerson(x, y);
-            grid->createPerson(new_x, new_y);
-        } else if (kind == car) {
-            grid->removeCar(x, y, orientation);
-            grid->createCar(new_x, new_y, orientation);
+        switch (orientation) {
+            case left:
+                if (x == PURKYNOVA_START + PURKYNOVA_WIDTH + 4) {
+                    if (!canIGo) {
+                        carStop();
+                    }
+                }
+                break;
+
+            case right:
+                if (x == PURKYNOVA_START - 4) {
+                    if (!canIGo) {
+                        carStop();
+                    }
+                }
+                break;
+            
+            case up:
+                if (y == SKACELOVA_START - 4) {
+                    if (!canIGo) {
+                        carStop();
+                    }
+                }
+                break;
+
+            case down:
+                if (y == SKACELOVA_START + SKACELOVA_WIDTH + 4) {
+                    if (!canIGo) {
+                        carStop();
+                    }
+                }
+                break;
+        }
+    } else if (kind == person) {
+        // TODO zastaveni cloveka
+    }
+
+    for (int i = 0; i < velocity; i++) {
+        if (checkIfClearWay(grid) && !checkIfFinished()) {
+            int new_x = x;
+            int new_y = y;
+
+            if (orientation == left) {
+                new_x -= 1;
+            } else if (orientation == right) {
+                new_x += 1;
+            } else if (orientation == up) {
+                new_y += 1;
+            } else if (orientation == down) {
+                new_y -= 1;
+            }
+
+            if (kind == person) {
+                grid->removePerson(x, y);
+                grid->createPerson(new_x, new_y);
+            } else if (kind == car) {
+                grid->removeCar(x, y, orientation);
+                grid->createCar(new_x, new_y, orientation);
+            }
+
+            x = new_x;
+            y = new_y;
+        }
+    }
+
+    // adjust car speed
+    if (kind == car) {
+        if (velocity == 0 && isCarSemaphoreGreen(grid)) {
+            carSpeedUp();
         }
 
-        x = new_x;
-        y = new_y;
+        if (velocity < initial_car_velocity) {
+            carSpeedUp();
+        }
+
+        if (!isCarSemaphoreGreen(grid)) {
+            carSlowDown();
+
+            if (velocity < 2) {
+                velocity = 2;
+            }
+        }
     }
 }
 
