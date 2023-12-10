@@ -144,36 +144,37 @@ void Movable::getCoordinationsForPedestrian(Grid *grid) {
     y = rand_y + spawn_y_start;
 }
 
-void Movable::getCoordinationsForCar(Grid *grid){
+void Movable::getCoordinationsForCar(Grid *grid) {
     int spawn_x_start;
     int spawn_y_start;
     double rand = getRand();
     if (rand >= 0 && rand < 0.2) {
-        // top left spawn
-        spawn_x_start = 30;
-        spawn_y_start = 82;
+        // top spawn
+        spawn_x_start = 54;
+        spawn_y_start = 110;
+        orientation = Orientation::down;
     } else if (rand >= 0.2 && rand < 0.4) {
-        // botom right spawn
-        spawn_x_start = 76;
-        spawn_y_start = 32;
+        // bottom spawn
+        spawn_x_start = 66;
+        spawn_y_start = 10;
+        orientation = Orientation::up;
     } else if (rand >= 0.4 && rand < 0.7) {
-        // top right spawn
-        spawn_x_start = 76;
-        spawn_y_start = 82;
+        // left spawn
+        spawn_x_start = 10;
+        spawn_y_start = 54;
+        orientation = Orientation::right;
     } else {
-        // bottom left spawn
-        spawn_x_start = 30;
-        spawn_y_start = 32;
+        // right spawn
+        spawn_x_start = 110;
+        spawn_y_start = 56;
+        orientation = Orientation::left;
     }
 
-    int rand_x = getRand() * 10;
-    int rand_y = getRand() * 10;
-    while (!grid->getPoint(rand_x + spawn_x_start, rand_y + spawn_y_start).isEmpty()) {
-        rand_x = getRand() * 10;
-        rand_y = getRand() * 10;
-    }
-    x = rand_x + spawn_x_start;
-    y = rand_y + spawn_y_start;
+    rand = getRand();
+    // TODO cile aut
+
+    x = spawn_x_start;
+    y = spawn_y_start;
 }
 
 /**
@@ -218,7 +219,7 @@ MovableThing Movable::getKind() { return kind; }
  */
 Orientation Movable::getOrientation() { return orientation; }
 
-bool check_x_path(int x, int check_end_x, int check_end_y, int add_x, Grid *grid){
+bool check_x_path(int x, int check_end_x, int check_end_y, int add_x, Grid *grid) {
     for (int i = x; i != check_end_x; i += add_x) {
         if (!grid->getPoint(i, check_end_y).isEmpty()) {
             return false;
@@ -227,7 +228,7 @@ bool check_x_path(int x, int check_end_x, int check_end_y, int add_x, Grid *grid
     return true;
 }
 
-bool check_y_path(int y, int check_end_x, int check_end_y, int add_y, Grid *grid){
+bool check_y_path(int y, int check_end_x, int check_end_y, int add_y, Grid *grid) {
     for (int j = y; j != check_end_y; j += add_y) {
         if (!grid->getPoint(check_end_x, j).isEmpty()) {
             return false;
@@ -274,11 +275,11 @@ bool Movable::checkIfClearWay(Grid *grid) {
 
     for (int i = x + add_x; i != check_end_x; i += add_x) {
         if (!grid->getPoint(i, check_end_y).isEmpty()) {
-            if(kind == person){
-                if(check_x_path(x, check_end_x, check_end_y + 1, add_x, grid)){
+            if (kind == person) {
+                if (check_x_path(x, check_end_x, check_end_y + 1, add_x, grid)) {
                     y += 1;
                     return true;
-                }else if(check_x_path(x, check_end_x, check_end_y - 1, add_x, grid)){
+                } else if (check_x_path(x, check_end_x, check_end_y - 1, add_x, grid)) {
                     y -= 1;
                     return true;
                 }
@@ -291,17 +292,17 @@ bool Movable::checkIfClearWay(Grid *grid) {
 
     for (int j = y + add_y; j != check_end_y; j += add_y) {
         if (!grid->getPoint(check_end_x, j).isEmpty()) {
-            if(kind == person){
+            if (kind == person) {
                 // check if we can go around the obstacle
-                if(check_y_path(y, check_end_x + 1, check_end_y, add_y, grid)){
+                if (check_y_path(y, check_end_x + 1, check_end_y, add_y, grid)) {
                     x += 1;
                     return true;
-                }else if(check_y_path(y, check_end_x - 1, check_end_y - 1, add_y, grid)){
+                } else if (check_y_path(y, check_end_x - 1, check_end_y - 1, add_y, grid)) {
                     x -= 1;
                     return true;
                 }
                 return false;
-            }else{
+            } else {
                 return false;
             }
         }
@@ -609,7 +610,6 @@ bool Movable::amIRightBeforeCrosswalk(Grid *grid) {
  * @return Returns true, if the object can go.
  */
 bool Movable::canIGoWithSemaphores(Grid *grid) {
-    // check all the rules :skull
     if (!checkIfClearWay(grid)) {
         return false;
     }
@@ -633,6 +633,29 @@ bool Movable::canIGoWithSemaphores(Grid *grid) {
     return false;
 }
 
+bool Movable::amIOnPriorityRoad(Grid *grid) {
+    if (y >= 46 && y <= 74 && ((x >= 0 && x <= 42) || (x >= 72 && x <= 120))) {
+        return true;
+    }
+    return false;
+}
+
+bool Movable::ownDesicion(Grid *grid) {
+    // TODO
+    if (kind == person) {
+        // kdyz obe auta stoji, jdi.
+        // jinak rozhodnuti podle vzorce
+    }
+    return false;
+}
+
+bool Movable::letPedestriansGo(Grid *grid) {
+    // checkni jestli tam nekdo ceka a random se rozhodni, jestli ho pustis nebo ne
+    // pokud je pustil nekdo z druheho smeru, mas znacne vetsi sanci je taky pustit
+    // TODO
+    return false;
+}
+
 /**
  * Check all the rules without semaphores.
  *
@@ -640,8 +663,31 @@ bool Movable::canIGoWithSemaphores(Grid *grid) {
  * @return Returns true, if the object can go.
  */
 bool Movable::canIGoWithoutSemaphores(Grid *grid) {
-    // TODO
-    return true;
+    if (!checkIfClearWay(grid)) {
+        return false;
+    }
+    if (kind == car) {
+        // kdyz jsem na hlavni, muzu jet basicly vzdycky, else se musim rozhodnout
+        if (amIOnPriorityRoad(grid)) {
+            return true;
+        } else if (amIinsideIntersection(grid)) {
+            return true;
+        } else if (ownDesicion(grid)) { // z hlediska aut, nebere lidi v potaz
+            return true;
+        }
+
+        // tady to chce jinou funkci - random se rozhodne, jestli je pustim nebo ne - musi tam , ale nekdo cekat.
+        if (amIRightBeforeCrosswalk(grid) && letPedestriansGo(grid)) { // + && i wan
+            return true;
+        }
+    } else if (kind == person) {
+        if (amIonCrosswalk(grid)) {
+            return true;
+        } else if (amIRightBeforeCrosswalk(grid) && ownDesicion(grid)) {
+            return true;
+        }
+    }
+    return false;
     // crossing for pedestrians or cars kdyz nejsou na hlavni:
     // l_veh - vzdalenost od auta od prechodu nebo od auta
     // v_veh - budouci nebo stavajici rychlost auta

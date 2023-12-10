@@ -30,6 +30,9 @@ class Movable {
     int pedEndzone = 0;
     void getCoordinationsForPedestrian(Grid *grid);
     void getCoordinationsForCar(Grid *grid);
+    bool amIOnPriorityRoad(Grid *grid);
+    bool ownDesicion(Grid *grid);
+    bool letPedestriansGo(Grid *grid);
 
   public:
     Movable(MovableThing _kind, int _start_x, int _start_y, int _end_x, int _end_y, Orientation _orientation, Grid *grid);
