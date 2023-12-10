@@ -1,12 +1,12 @@
-#include <vector>
 #include "simulation.hpp"
 #include "iostream"
+#include <vector>
 
 /**
  * Creates a new simulation object.
- * 
+ *
  * @param signalizedIntersection Whether the intersection is signalized or not.
-*/
+ */
 Simulation::Simulation(bool signalizedIntersection) {
     this->signalizedIntersection = signalizedIntersection;
     generateCrossroadBackgroud(&grid);
@@ -32,10 +32,45 @@ void Simulation::makeStep(std::vector<Movable> *movableThings) {
     }
 }
 
+void Simulation::semaphoreRotation(int second) {
+    const int cycle_time = 250;
+    second = second % cycle_time;
+
+    const int CAR_GREEN_TIME = 120;
+    const int CAR_HORIZONTAL_SEM_START = 0;
+    const int CAR_VERTICAL_SEM_START = 130;
+    const int PED_GREEN_TIME = 20;
+
+    if (second == CAR_HORIZONTAL_SEM_START) {
+        grid.car_semaphore_horizontal = grid.car_semaphore_horizontal.green();
+        grid.pedestrian_semaphore_top = grid.pedestrian_semaphore_top.green();
+        grid.pedestrian_semaphore_bottom = grid.pedestrian_semaphore_bottom.green();
+
+    } else if (second == CAR_HORIZONTAL_SEM_START + PED_GREEN_TIME) {
+        grid.pedestrian_semaphore_top = grid.pedestrian_semaphore_top.red();
+        grid.pedestrian_semaphore_bottom = grid.pedestrian_semaphore_bottom.red();
+        
+    } else if (second == CAR_GREEN_TIME) {
+        grid.car_semaphore_horizontal = grid.car_semaphore_horizontal.red();
+
+    } else if (second == CAR_VERTICAL_SEM_START) {
+        grid.car_semaphore_vertical = grid.car_semaphore_vertical.green();
+        grid.pedestrian_semaphore_left = grid.pedestrian_semaphore_left.green();
+        grid.pedestrian_semaphore_right = grid.pedestrian_semaphore_right.green();
+
+    } else if (second == CAR_VERTICAL_SEM_START + PED_GREEN_TIME) {
+        grid.pedestrian_semaphore_left = grid.pedestrian_semaphore_left.red();
+        grid.pedestrian_semaphore_right = grid.pedestrian_semaphore_right.red();
+
+    } else if (second == CAR_GREEN_TIME + CAR_VERTICAL_SEM_START - 10) {
+        grid.car_semaphore_vertical = grid.car_semaphore_vertical.red();
+    }
+}
+
 /**
  * Runs the simulation.
-*/
-void Simulation::Run(){
+ */
+void Simulation::Run() {
     int SECONDS = 250;
 
     std::vector<Movable> movableThings;
@@ -44,15 +79,21 @@ void Simulation::Run(){
             try {
                 Movable tmp(car, 10, 54, 118, 54, right, &grid);
                 movableThings.push_back(tmp);
-            } catch (const std::exception& e) { }
+            } catch (const std::exception &e) {
+            }
         }
-
+        if (i % 5 == 0) {
+            try {
+                Movable tmp(person, 0, 0, 0, 0, right, &grid);
+                movableThings.push_back(tmp);
+            } catch (const std::exception &e) {
+            }
+        }
+        semaphoreRotation(i);
         makeStep(&movableThings);
-
 
         generateImage(grid, DEFAULT_IMAGE_SIZE, "output/" + std::to_string(i) + ".bmp");
     }
-
 
     std::cout << "This many people have finished the journey in 250 seconds: ";
     std::cout << finishedCars;
