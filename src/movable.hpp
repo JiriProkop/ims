@@ -5,7 +5,7 @@
 #define MOVABLE_HPP
 
 #define SPACE_BETWEEN_PEOPLE 1 // the space to leave between people
-#define SPACE_BETWEEN_CARS 2   // the space to leave between cars
+#define SPACE_BETWEEN_CARS 4   // the space to leave between cars
 
 enum MovableThing { person, car };
 

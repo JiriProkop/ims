@@ -1,5 +1,6 @@
 #include "simulation.hpp"
 #include "iostream"
+#include "arguments.hpp"
 #include <vector>
 
 /**
@@ -7,12 +8,15 @@
  *
  * @param signalizedIntersection Whether the intersection is signalized or not.
  */
-Simulation::Simulation(bool signalizedIntersection) {
+Simulation::Simulation(bool signalizedIntersection, int _simulationLength, int _skacelovaGreenLength, int _purkynovaGreenLength) {
     std::srand(time(0));
     this->signalizedIntersection = signalizedIntersection;
     generateCrossroadBackgroud(&grid);
     finishedPedestrians = 0;
     finishedCars = 0;
+    simulationLength = _simulationLength;
+    skacelovaGreenLength = _skacelovaGreenLength;
+    purkynovaGreenLength = _purkynovaGreenLength;
 }
 
 void Simulation::makeStep(std::vector<Movable> *movableThings) {
@@ -45,36 +49,40 @@ void Simulation::makeStep(std::vector<Movable> *movableThings) {
 }
 
 void Simulation::semaphoreRotation(int second) {
-    const int cycle_time = 250;
-    second = second % cycle_time;
-
-    const int CAR_GREEN_TIME = 120;
     const int CAR_HORIZONTAL_SEM_START = 0;
-    const int CAR_VERTICAL_SEM_START = 130;
-    const int PED_GREEN_TIME = 20;
+    const int START_DIFF = 5;
+    const int HORIZONTAL_GREEN_LENGTH = skacelovaGreenLength;
+    const int VERTICAL_GREEN_LENGTH = purkynovaGreenLength;
+
+    const int cycle_time = HORIZONTAL_GREEN_LENGTH + START_DIFF + VERTICAL_GREEN_LENGTH;
+    second = second % cycle_time;
 
     if (second == CAR_HORIZONTAL_SEM_START) {
         grid.car_semaphore_horizontal = grid.car_semaphore_horizontal.green();
+    
+    } else if (second == CAR_HORIZONTAL_SEM_START + START_DIFF) {
         grid.pedestrian_semaphore_top = grid.pedestrian_semaphore_top.green();
         grid.pedestrian_semaphore_bottom = grid.pedestrian_semaphore_bottom.green();
-
-    } else if (second == CAR_HORIZONTAL_SEM_START + PED_GREEN_TIME) {
+    
+    } else if (second == CAR_HORIZONTAL_SEM_START + HORIZONTAL_GREEN_LENGTH - START_DIFF) { 
         grid.pedestrian_semaphore_top = grid.pedestrian_semaphore_top.red();
         grid.pedestrian_semaphore_bottom = grid.pedestrian_semaphore_bottom.red();
-        
-    } else if (second == CAR_GREEN_TIME) {
-        grid.car_semaphore_horizontal = grid.car_semaphore_horizontal.red();
 
-    } else if (second == CAR_VERTICAL_SEM_START) {
+    } else if (second == CAR_HORIZONTAL_SEM_START + HORIZONTAL_GREEN_LENGTH) {
+        grid.car_semaphore_horizontal = grid.car_semaphore_horizontal.red();
+        
+    } else if (second == HORIZONTAL_GREEN_LENGTH + START_DIFF) {
         grid.car_semaphore_vertical = grid.car_semaphore_vertical.green();
+
+    } else if (second == HORIZONTAL_GREEN_LENGTH + START_DIFF + START_DIFF) {
         grid.pedestrian_semaphore_left = grid.pedestrian_semaphore_left.green();
         grid.pedestrian_semaphore_right = grid.pedestrian_semaphore_right.green();
 
-    } else if (second == CAR_VERTICAL_SEM_START + PED_GREEN_TIME) {
+    } else if (second == HORIZONTAL_GREEN_LENGTH + START_DIFF + VERTICAL_GREEN_LENGTH - START_DIFF) {
         grid.pedestrian_semaphore_left = grid.pedestrian_semaphore_left.red();
         grid.pedestrian_semaphore_right = grid.pedestrian_semaphore_right.red();
 
-    } else if (second == CAR_GREEN_TIME + CAR_VERTICAL_SEM_START - 10) {
+    } else if (second == HORIZONTAL_GREEN_LENGTH + START_DIFF + VERTICAL_GREEN_LENGTH) {
         grid.car_semaphore_vertical = grid.car_semaphore_vertical.red();
     }
 }
@@ -83,7 +91,7 @@ void Simulation::semaphoreRotation(int second) {
  * Runs the simulation.
  */
 void Simulation::Run() {
-    int SECONDS = 250;
+    int SECONDS = simulationLength;
 
     std::vector<Movable> movableThings;
     for (int i = 0; i < SECONDS; i++) {
