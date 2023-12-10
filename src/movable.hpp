@@ -31,9 +31,6 @@ class Movable {
     int pedEndzone = 0;
     void getCoordinationsForPedestrian(Grid *grid);
     void getCoordinationsForCar(Grid *grid);
-    bool amIOnPriorityRoad(Grid *grid);
-    bool ownDesicion(Grid *grid);
-    bool letPedestriansGo(Grid *grid);
 
   public:
     Movable(MovableThing _kind, Grid *grid);
@@ -48,7 +45,6 @@ class Movable {
     bool isCarSemaphoreGreen(Grid *grid);
     void removeMovable(Grid *grid);
     bool canIGoWithSemaphores(Grid *grid);
-    bool canIGoWithoutSemaphores(Grid *grid);
     bool amIRightBeforeCrosswalk(Grid *grid);
 };
 
