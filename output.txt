@@ -1,0 +1,471 @@
+
+skacelova green time: 5
+pyrkynova green time: 1
+cars finished: 248
+pedestrians finished: 492
+
+skacelova green time: 6
+pyrkynova green time: 2
+cars finished: 247
+pedestrians finished: 491
+
+skacelova green time: 7
+pyrkynova green time: 3
+cars finished: 247
+pedestrians finished: 488
+
+skacelova green time: 8
+pyrkynova green time: 4
+cars finished: 247
+pedestrians finished: 493
+
+skacelova green time: 9
+pyrkynova green time: 5
+cars finished: 245
+pedestrians finished: 490
+
+skacelova green time: 10
+pyrkynova green time: 6
+cars finished: 246
+pedestrians finished: 492
+
+skacelova green time: 11
+pyrkynova green time: 7
+cars finished: 247
+pedestrians finished: 488
+
+skacelova green time: 12
+pyrkynova green time: 8
+cars finished: 242
+pedestrians finished: 478
+
+skacelova green time: 13
+pyrkynova green time: 9
+cars finished: 245
+pedestrians finished: 483
+
+skacelova green time: 14
+pyrkynova green time: 10
+cars finished: 243
+pedestrians finished: 486
+
+skacelova green time: 15
+pyrkynova green time: 11
+cars finished: 239
+pedestrians finished: 481
+
+skacelova green time: 16
+pyrkynova green time: 12
+cars finished: 239
+pedestrians finished: 483
+
+skacelova green time: 17
+pyrkynova green time: 13
+cars finished: 241
+pedestrians finished: 487
+
+skacelova green time: 18
+pyrkynova green time: 14
+cars finished: 235
+pedestrians finished: 474
+
+skacelova green time: 19
+pyrkynova green time: 15
+cars finished: 243
+pedestrians finished: 485
+
+skacelova green time: 20
+pyrkynova green time: 16
+cars finished: 236
+pedestrians finished: 489
+
+skacelova green time: 21
+pyrkynova green time: 17
+cars finished: 239
+pedestrians finished: 480
+
+skacelova green time: 22
+pyrkynova green time: 18
+cars finished: 240
+pedestrians finished: 485
+
+skacelova green time: 23
+pyrkynova green time: 19
+cars finished: 233
+pedestrians finished: 485
+
+skacelova green time: 24
+pyrkynova green time: 20
+cars finished: 237
+pedestrians finished: 485
+
+skacelova green time: 25
+pyrkynova green time: 21
+cars finished: 241
+pedestrians finished: 484
+
+skacelova green time: 26
+pyrkynova green time: 22
+cars finished: 232
+pedestrians finished: 483
+
+skacelova green time: 27
+pyrkynova green time: 23
+cars finished: 230
+pedestrians finished: 483
+
+skacelova green time: 28
+pyrkynova green time: 24
+cars finished: 241
+pedestrians finished: 489
+
+skacelova green time: 29
+pyrkynova green time: 25
+cars finished: 224
+pedestrians finished: 483
+
+skacelova green time: 30
+pyrkynova green time: 26
+cars finished: 230
+pedestrians finished: 493
+
+skacelova green time: 31
+pyrkynova green time: 27
+cars finished: 230
+pedestrians finished: 489
+
+skacelova green time: 32
+pyrkynova green time: 28
+cars finished: 223
+pedestrians finished: 487
+
+skacelova green time: 33
+pyrkynova green time: 29
+cars finished: 224
+pedestrians finished: 477
+
+skacelova green time: 34
+pyrkynova green time: 30
+cars finished: 219
+pedestrians finished: 489
+
+skacelova green time: 35
+pyrkynova green time: 31
+cars finished: 226
+pedestrians finished: 484
+
+skacelova green time: 36
+pyrkynova green time: 32
+cars finished: 231
+pedestrians finished: 485
+
+skacelova green time: 37
+pyrkynova green time: 33
+cars finished: 221
+pedestrians finished: 489
+
+skacelova green time: 38
+pyrkynova green time: 34
+cars finished: 223
+pedestrians finished: 475
+
+skacelova green time: 39
+pyrkynova green time: 35
+cars finished: 218
+pedestrians finished: 485
+
+skacelova green time: 40
+pyrkynova green time: 36
+cars finished: 227
+pedestrians finished: 491
+
+skacelova green time: 41
+pyrkynova green time: 37
+cars finished: 214
+pedestrians finished: 474
+
+skacelova green time: 42
+pyrkynova green time: 38
+cars finished: 226
+pedestrians finished: 486
+
+skacelova green time: 43
+pyrkynova green time: 39
+cars finished: 228
+pedestrians finished: 489
+
+skacelova green time: 44
+pyrkynova green time: 40
+cars finished: 217
+pedestrians finished: 487
+
+skacelova green time: 45
+pyrkynova green time: 41
+cars finished: 214
+pedestrians finished: 475
+
+skacelova green time: 46
+pyrkynova green time: 42
+cars finished: 215
+pedestrians finished: 483
+
+skacelova green time: 47
+pyrkynova green time: 43
+cars finished: 212
+pedestrians finished: 489
+
+skacelova green time: 48
+pyrkynova green time: 44
+cars finished: 214
+pedestrians finished: 490
+
+skacelova green time: 49
+pyrkynova green time: 45
+cars finished: 206
+pedestrians finished: 479
+
+skacelova green time: 50
+pyrkynova green time: 46
+cars finished: 210
+pedestrians finished: 480
+
+skacelova green time: 51
+pyrkynova green time: 47
+cars finished: 211
+pedestrians finished: 481
+
+skacelova green time: 52
+pyrkynova green time: 48
+cars finished: 222
+pedestrians finished: 486
+
+skacelova green time: 53
+pyrkynova green time: 49
+cars finished: 209
+pedestrians finished: 488
+
+skacelova green time: 54
+pyrkynova green time: 50
+cars finished: 213
+pedestrians finished: 485
+
+skacelova green time: 55
+pyrkynova green time: 51
+
+skacelova green time: 56
+pyrkynova green time: 52
+cars finished: 203
+pedestrians finished: 476
+
+skacelova green time: 57
+pyrkynova green time: 53
+cars finished: 206
+pedestrians finished: 481
+
+skacelova green time: 58
+pyrkynova green time: 54
+cars finished: 206
+pedestrians finished: 488
+
+skacelova green time: 59
+pyrkynova green time: 55
+cars finished: 211
+pedestrians finished: 490
+
+skacelova green time: 60
+pyrkynova green time: 56
+cars finished: 214
+pedestrians finished: 489
+
+skacelova green time: 61
+pyrkynova green time: 57
+cars finished: 207
+pedestrians finished: 478
+
+skacelova green time: 62
+pyrkynova green time: 58
+cars finished: 206
+pedestrians finished: 472
+
+skacelova green time: 63
+pyrkynova green time: 59
+cars finished: 211
+pedestrians finished: 480
+
+skacelova green time: 64
+pyrkynova green time: 60
+
+skacelova green time: 65
+pyrkynova green time: 61
+cars finished: 205
+pedestrians finished: 485
+
+skacelova green time: 66
+pyrkynova green time: 62
+cars finished: 206
+pedestrians finished: 488
+
+skacelova green time: 67
+pyrkynova green time: 63
+cars finished: 195
+pedestrians finished: 489
+
+skacelova green time: 68
+pyrkynova green time: 64
+cars finished: 206
+pedestrians finished: 489
+
+skacelova green time: 69
+pyrkynova green time: 65
+cars finished: 213
+pedestrians finished: 489
+
+skacelova green time: 70
+pyrkynova green time: 66
+cars finished: 200
+pedestrians finished: 470
+
+skacelova green time: 71
+pyrkynova green time: 67
+cars finished: 206
+pedestrians finished: 466
+
+skacelova green time: 72
+pyrkynova green time: 68
+cars finished: 212
+pedestrians finished: 481
+
+skacelova green time: 73
+pyrkynova green time: 69
+cars finished: 197
+pedestrians finished: 479
+
+skacelova green time: 74
+pyrkynova green time: 70
+cars finished: 197
+pedestrians finished: 482
+
+skacelova green time: 75
+pyrkynova green time: 71
+cars finished: 204
+pedestrians finished: 482
+
+skacelova green time: 76
+pyrkynova green time: 72
+cars finished: 200
+pedestrians finished: 482
+
+skacelova green time: 77
+pyrkynova green time: 73
+cars finished: 201
+pedestrians finished: 489
+
+skacelova green time: 78
+pyrkynova green time: 74
+cars finished: 200
+pedestrians finished: 490
+
+skacelova green time: 79
+pyrkynova green time: 75
+cars finished: 201
+pedestrians finished: 488
+
+skacelova green time: 80
+pyrkynova green time: 76
+cars finished: 205
+pedestrians finished: 487
+
+skacelova green time: 81
+pyrkynova green time: 77
+cars finished: 196
+pedestrians finished: 485
+
+skacelova green time: 82
+pyrkynova green time: 78
+cars finished: 190
+pedestrians finished: 461
+
+skacelova green time: 83
+pyrkynova green time: 79
+cars finished: 198
+pedestrians finished: 470
+
+skacelova green time: 84
+pyrkynova green time: 80
+cars finished: 205
+pedestrians finished: 471
+
+skacelova green time: 85
+pyrkynova green time: 81
+cars finished: 196
+pedestrians finished: 476
+
+skacelova green time: 86
+pyrkynova green time: 82
+cars finished: 192
+pedestrians finished: 470
+
+skacelova green time: 87
+pyrkynova green time: 83
+cars finished: 202
+pedestrians finished: 478
+
+skacelova green time: 88
+pyrkynova green time: 84
+cars finished: 194
+pedestrians finished: 475
+
+skacelova green time: 89
+pyrkynova green time: 85
+cars finished: 200
+pedestrians finished: 486
+
+skacelova green time: 90
+pyrkynova green time: 86
+cars finished: 194
+pedestrians finished: 488
+
+skacelova green time: 91
+pyrkynova green time: 87
+cars finished: 197
+pedestrians finished: 489
+
+skacelova green time: 92
+pyrkynova green time: 88
+cars finished: 200
+pedestrians finished: 493
+
+skacelova green time: 93
+pyrkynova green time: 89
+cars finished: 201
+pedestrians finished: 491
+
+skacelova green time: 94
+pyrkynova green time: 90
+cars finished: 190
+pedestrians finished: 493
+
+skacelova green time: 95
+pyrkynova green time: 91
+cars finished: 192
+pedestrians finished: 489
+
+skacelova green time: 96
+pyrkynova green time: 92
+cars finished: 184
+pedestrians finished: 486
+
+skacelova green time: 97
+pyrkynova green time: 93
+cars finished: 189
+pedestrians finished: 486
+
+skacelova green time: 98
+pyrkynova green time: 94
+cars finished: 188
+pedestrians finished: 464
+
+skacelova green time: 99
+pyrkynova green time: 95
+cars finished: 186
+pedestrians finished: 463

@@ -97,7 +97,7 @@ void Simulation::Run() {
     for (int i = 0; i < SECONDS; i++) {
         makeStep(&movableThings);
         
-        if (i % 16 == 0) {
+        if (i % 4 == 0) {
             try {
 
                 Movable tmp2(car, 110, 60, 55, 4, left, &grid);
@@ -106,7 +106,7 @@ void Simulation::Run() {
             } catch (const std::exception &e) {
             }
         }
-        if (i % 5 == 0) {
+        if (i % 2 == 0) {
             try {
                 Movable tmp(person, 0, 0, 50, 50, right, &grid);
                 movableThings.push_back(tmp);
@@ -118,8 +118,11 @@ void Simulation::Run() {
         generateImage(grid, DEFAULT_IMAGE_SIZE, "output/" + std::to_string(i) + ".bmp");
     }
 
-    std::cout << "This many people have finished the journey in 250 seconds: ";
+    std::cout << "cars finished: ";
     std::cout << finishedCars;
+    std::cout << "\n";
+    std::cout << "pedestrians finished: ";
+    std::cout << finishedPedestrians;
     std::cout << "\n";
 }
 

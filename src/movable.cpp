@@ -321,18 +321,14 @@ bool Movable::checkIfClearWay(Grid *grid) {
         if (!grid->getPoint(i, check_end_y).isEmpty()) {
             if (kind == person && grid->getPoint(i, check_end_y).getColor() != grid->car_color) {
                 if (check_x_path(x, check_end_x, check_end_y + 1, add_x, grid)) {
-                    std::cout << "check_x_path" << std::endl;
                     grid->removePerson(x, y);
                     y += 1;
                     grid->createPerson(x, y);
-                    std::cout << "after check_x_path" << std::endl;
                     return true;
                 } else if (check_x_path(x, check_end_x, check_end_y - 1, add_x, grid)) {
-                    std::cout << "check_x_path" << std::endl;
                     grid->removePerson(x, y);
                     y -= 1;
                     grid->createPerson(x, y);
-                    std::cout << "after check_x_path" << std::endl;
                     return true;
                 }
                 return false;
@@ -347,18 +343,14 @@ bool Movable::checkIfClearWay(Grid *grid) {
             if (kind == person && grid->getPoint(check_end_x, j).getColor() != grid->car_color) {
                 // check if we can go around the obstacle
                 if (check_y_path(y, check_end_x + 1, check_end_y, add_y, grid)) {
-                    std::cout << "check_y_path" << std::endl;
                     grid->removePerson(x, y);
                     x += 1;
                     grid->createPerson(x, y);
-                    std::cout << "after check_y_path" << std::endl;
                     return true;
                 } else if (check_y_path(y, check_end_x - 1, check_end_y - 1, add_y, grid)) {
-                    std::cout << "check_y_path" << std::endl;
                     grid->removePerson(x, y);
                     x -= 1;
                     grid->createPerson(x, y);
-                    std::cout << "after check_y_path" << std::endl;
                     return true;
                 }
                 return false;
