@@ -10,7 +10,6 @@
  * @return random double between 0 and 1
  */
 double getRand() {
-    std::srand(std::time(nullptr));
     return ((double)std::rand()) / RAND_MAX;
 }
 
@@ -145,36 +144,78 @@ void Movable::getCoordinationsForPedestrian(Grid *grid) {
 }
 
 void Movable::getCoordinationsForCar(Grid *grid) {
-    int spawn_x_start;
-    int spawn_y_start;
-    double rand = getRand();
-    if (rand >= 0 && rand < 0.2) {
+    const int possible_end_top_x = 64;
+    const int possible_end_top_y = 110;
+    const int possible_end_bottom_x = 52;
+    const int possible_end_bottom_y = 10;
+    const int possible_end_left_x = 10;
+    const int possible_end_left_y = 66;
+    const int possible_end_right_x = 110;
+    const int possible_end_right_y = 54;
+
+    double rand_spawn = getRand();
+    double rand_end = getRand();
+    if (rand_spawn >= 0 && rand_spawn < 0.2) {
         // top spawn
-        spawn_x_start = 54;
-        spawn_y_start = 110;
+        x = 54;
+        y = 110;
         orientation = Orientation::down;
-    } else if (rand >= 0.2 && rand < 0.4) {
+        if(rand_end >= 0 && rand_end < 0.5) {
+            end_x = possible_end_bottom_x;
+            end_y = possible_end_bottom_y;
+        } else if(rand_end >= 0.5 && rand_end < 0.75) {
+            end_x = possible_end_right_x;
+            end_y = possible_end_right_y;
+        } else {
+            end_x = possible_end_left_x;
+            end_y = possible_end_left_y;
+        }
+    } else if (rand_spawn >= 0.2 && rand_spawn < 0.4) {
         // bottom spawn
-        spawn_x_start = 66;
-        spawn_y_start = 10;
+        x = 66;
+        y = 10;
         orientation = Orientation::up;
-    } else if (rand >= 0.4 && rand < 0.7) {
+        if(rand_end >= 0 && rand_end < 0.5) {
+            end_x = possible_end_top_x;
+            end_y = possible_end_top_y;
+        } else if(rand_end >= 0.5 && rand_end < 0.75) {
+            end_x = possible_end_right_x;
+            end_y = possible_end_right_y;
+        } else {
+            end_x = possible_end_left_x;
+            end_y = possible_end_left_y;
+        }
+    } else if (rand_spawn >= 0.4 && rand_spawn < 0.7) {
         // left spawn
-        spawn_x_start = 10;
-        spawn_y_start = 54;
+        x = 10;
+        y = 54;
         orientation = Orientation::right;
+        if(rand_end >= 0 && rand_end < 0.5) {
+            end_x = possible_end_right_x;
+            end_y = possible_end_right_y;
+        } else if(rand_end >= 0.5 && rand_end < 0.75) {
+            end_x = possible_end_bottom_x;
+            end_y = possible_end_bottom_y;
+        } else {
+            end_x = possible_end_top_x;
+            end_y = possible_end_top_y;
+        }
     } else {
         // right spawn
-        spawn_x_start = 110;
-        spawn_y_start = 56;
+        x = 110;
+        y = 66;
         orientation = Orientation::left;
+        if(rand_end >= 0 && rand_end < 0.5) {
+            end_x = possible_end_right_x;
+            end_y = possible_end_right_y;
+        } else if(rand_end >= 0.5 && rand_end < 0.75) {
+            end_x = possible_end_bottom_x;
+            end_y = possible_end_bottom_y;
+        } else {
+            end_x = possible_end_top_x;
+            end_y = possible_end_top_y;
+        }
     }
-
-    rand = getRand();
-    // TODO cile aut
-
-    x = spawn_x_start;
-    y = spawn_y_start;
 }
 
 /**
@@ -203,6 +244,8 @@ Movable::Movable(MovableThing _kind, int _start_x, int _start_y, int _end_x, int
         velocity = getPederstrianVelocity();
         isPedInEndZone = getPedEndZone(x, y);
     } else if (kind == car) {
+        getCoordinationsForCar(grid);
+        std::cout << "Car: from" << x << " " << y << " to" << end_x << " " << end_y << std::endl;
         grid->createCar(x, y, orientation);
         velocity = initial_car_velocity;
     }
@@ -353,10 +396,8 @@ bool Movable::move(Grid *grid, bool signalized) {
         canIGo = canIGoWithoutSemaphores(grid);
     }
 
-    printf("canIgo: %d\n", canIGo);
 
     if (kind == car) {
-        printf("car\n");
 
         switch (orientation) {
             case left:
@@ -399,10 +440,8 @@ bool Movable::move(Grid *grid, bool signalized) {
                 }
                 break;
 
-            printf("velocity %d\n", velocity);
         }
     } else if (kind == person) {
-        printf("person\n");
         if (!canIGo) {
             return false;
         }
@@ -410,7 +449,6 @@ bool Movable::move(Grid *grid, bool signalized) {
 
 
 
-        printf("xy: %d %d\n",x,y);
         if (checkIfFinished()) {
 
             if (kind == person) {
@@ -419,14 +457,12 @@ bool Movable::move(Grid *grid, bool signalized) {
                 grid->removeCar(x, y, orientation);
             }
             
-            std::cout << "removed\n";
             return true;
         }
         
         if (canIGo) {
             int new_x = x;
             int new_y = y;
-            printf("new xy: %d\n");
 
             if (orientation == left) {
                 new_x -= 1;
@@ -444,8 +480,6 @@ bool Movable::move(Grid *grid, bool signalized) {
                 case Orientation::left:
                 case Orientation::right:
                     if (new_x == end_x && new_y != end_y) {
-                        std::cout << "before turn"
-                                  << "\n";
                         if (new_y < end_y) {
                             newOrientation = up;
                         } else {
@@ -456,8 +490,6 @@ bool Movable::move(Grid *grid, bool signalized) {
                 case Orientation::up:
                 case Orientation::down:
                     if (new_y == end_y && new_x != end_x) {
-                        std::cout << "before turn"
-                                  << "\n";
                         if (new_x < end_x) {
                             newOrientation = right;
                         } else {
@@ -467,9 +499,7 @@ bool Movable::move(Grid *grid, bool signalized) {
                     break;
             }
             if (kind == person) {
-                std::cout << "nok\n";
                 grid->removePerson(x, y);
-                std::cout << "ok\n";
                 grid->createPerson(new_x, new_y);
             } else if (kind == car) {
                 grid->removeCar(x, y, orientation);
