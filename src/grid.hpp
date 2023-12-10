@@ -19,6 +19,10 @@ class Color {
             return true;
         return false;
     }
+
+    bool operator!=(const Color &c) {
+        return !(*this == c);
+    }
 };
 
 class Point {
@@ -42,11 +46,11 @@ class Grid {
     int gridSize;
     const int car_len = 8;
     const int car_wid = 4;
-    const Color car_color = Color(255, 0, 0);
-    const Color person_color = Color(0, 255, 0);
 
   public:
     Grid(int size);
+    const Color car_color = Color(255, 0, 0);
+    const Color person_color = Color(0, 255, 0);
     Point getPoint(int x, int y);
     void setPoint(int x, int y, Point point);
     void createCar(int x_left, int y_left, Orientation orientation);

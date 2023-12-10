@@ -100,8 +100,8 @@ void Simulation::Run() {
         }
         if (i % 5 == 0) {
             try {
-                //Movable tmp(person, 0, 0, 50, 50, right, &grid);
-                //movableThings.push_back(tmp);
+                Movable tmp(person, 0, 0, 50, 50, right, &grid);
+                movableThings.push_back(tmp);
             } catch (const std::exception &e) {
             }
         }
