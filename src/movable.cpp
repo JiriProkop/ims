@@ -520,7 +520,15 @@ bool Movable::move(Grid *grid, bool signalized) {
             } else if (kind == car) {
                 grid->removeCar(x, y, orientation);
                 orientation = newOrientation;
-                grid->createCar(new_x, new_y, orientation);
+                // if the car cant continue, stay and wait for the way to free
+                try {
+                    grid->createCar(new_x, new_y, orientation);
+                } catch(const std::invalid_argument& e) {
+                    grid->createCar(x, y, orientation);
+                    new_x = x;
+                    new_y = y;
+                }
+                
             }
 
             x = new_x;
