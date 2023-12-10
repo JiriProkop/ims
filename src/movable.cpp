@@ -206,8 +206,8 @@ void Movable::getCoordinationsForCar(Grid *grid) {
         y = 66;
         orientation = Orientation::left;
         if(rand_end >= 0 && rand_end < 0.5) {
-            end_x = possible_end_right_x;
-            end_y = possible_end_right_y;
+            end_x = possible_end_left_x;
+            end_y = possible_end_left_y;
         } else if(rand_end >= 0.5 && rand_end < 0.75) {
             end_x = possible_end_bottom_x;
             end_y = possible_end_bottom_y;
