@@ -229,13 +229,8 @@ void Movable::getCoordinationsForCar(Grid *grid) {
  * @param _orientation The orientation of the object.
  * @param grid The grid to create the object in.
  */
-Movable::Movable(MovableThing _kind, int _start_x, int _start_y, int _end_x, int _end_y, Orientation _orientation, Grid *grid) {
+Movable::Movable(MovableThing _kind, Grid *grid) {
     kind = _kind;
-    x = _start_x;
-    y = _start_y;
-    end_x = _end_x;
-    end_y = _end_y;
-    orientation = _orientation;
     goingOut = false;
     aggressivity = getRand();
     if (kind == person) {
@@ -395,12 +390,7 @@ bool Movable::move(Grid *grid, bool signalized) {
     const int SKACELOVA_WIDTH = 28;
 
     // stop if obejct if it cannot move
-    bool canIGo = false;
-    if (signalized) {
-        canIGo = canIGoWithSemaphores(grid);
-    } else {
-        canIGo = canIGoWithoutSemaphores(grid);
-    }
+    bool canIGo = canIGoWithSemaphores(grid);
 
 
     if (kind == car) {
@@ -718,66 +708,3 @@ bool Movable::canIGoWithSemaphores(Grid *grid) {
     return false;
 }
 
-bool Movable::amIOnPriorityRoad(Grid *grid) {
-    if (y >= 46 && y <= 74 && ((x >= 0 && x <= 42) || (x >= 72 && x <= 120))) {
-        return true;
-    }
-    return false;
-}
-
-bool Movable::ownDesicion(Grid *grid) {
-    // TODO
-    if (kind == person) {
-        // kdyz obe auta stoji, jdi.
-        // jinak rozhodnuti podle vzorce
-    }
-    return false;
-}
-
-bool Movable::letPedestriansGo(Grid *grid) {
-    // checkni jestli tam nekdo ceka a random se rozhodni, jestli ho pustis nebo ne
-    // pokud je pustil nekdo z druheho smeru, mas znacne vetsi sanci je taky pustit
-    // TODO
-    return false;
-}
-
-/**
- * Check all the rules without semaphores.
- *
- * @param grid The grid.
- * @return Returns true, if the object can go.
- */
-bool Movable::canIGoWithoutSemaphores(Grid *grid) {
-    if (!checkIfClearWay(grid)) {
-        return false;
-    }
-    if (kind == car) {
-        // kdyz jsem na hlavni, muzu jet basicly vzdycky, else se musim rozhodnout
-        if (amIOnPriorityRoad(grid)) {
-            return true;
-        } else if (amIinsideIntersection(grid)) {
-            return true;
-        } else if (ownDesicion(grid)) { // z hlediska aut, nebere lidi v potaz
-            return true;
-        }
-
-        // tady to chce jinou funkci - random se rozhodne, jestli je pustim nebo ne - musi tam , ale nekdo cekat.
-        if (amIRightBeforeCrosswalk(grid) && letPedestriansGo(grid)) { // + && i wan
-            return true;
-        }
-    } else if (kind == person) {
-        if (amIonCrosswalk(grid)) {
-            return true;
-        } else if (amIRightBeforeCrosswalk(grid) && ownDesicion(grid)) {
-            return true;
-        }
-    }
-    return false;
-    // crossing for pedestrians or cars kdyz nejsou na hlavni:
-    // l_veh - vzdalenost od auta od prechodu nebo od auta
-    // v_veh - budouci nebo stavajici rychlost auta
-    // l_ped - vzdalenost chodce od konce prechodu/pruhu
-    // v_ped - ocekavan rychlost chodce/auta. Da se pouzit prumer.
-    // t - podle akceptace chodce/auta, u chodce se muze urcit podle agresivity chodce
-    // ROVNICE: l_veh/v_veh - l_ped/v_ped >= t
-}

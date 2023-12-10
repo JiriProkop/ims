@@ -59,7 +59,7 @@ class Grid {
     bool isPerson(int x, int y);
     void removeCar(int x_left, int y_left, Orientation orientation);
     void removePerson(int x, int y);
-    // FIXME semafory jsou rizene v simulaci
+    
     Color car_semaphore_horizontal = Color(255, 0, 0);
     Color car_semaphore_vertical = Color(255, 0, 0);
     

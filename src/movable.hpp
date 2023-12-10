@@ -36,7 +36,7 @@ class Movable {
     bool letPedestriansGo(Grid *grid);
 
   public:
-    Movable(MovableThing _kind, int _start_x, int _start_y, int _end_x, int _end_y, Orientation _orientation, Grid *grid);
+    Movable(MovableThing _kind, Grid *grid);
     bool checkIfClearWay(Grid *grid);
     MovableThing getKind();
     Orientation getOrientation();

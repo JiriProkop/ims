@@ -53,12 +53,10 @@ Grid::Grid(int size) {
 }
 
 Point Grid::getPoint(int x, int y) {
-    // TODO check for bounds
     return grid[y][x];
 }
 
 void Grid::setPoint(int x, int y, Point point) {
-    // TODO check for bounds
     grid[y][x] = point;
 }
 
