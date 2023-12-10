@@ -20,6 +20,7 @@ class Movable {
     bool finished;
     int aggressivity;
     int velocity;
+    bool goingOut;
     static const int initial_car_velocity = 14; // 25 km/h ~= 7 m/s
     static const int car_speed_change = 4;      // 2 m/s^2
     std::function<bool(int, int)> getPedEndZone(int start_x, int start_y);
@@ -43,7 +44,7 @@ class Movable {
     void carSlowDown();
     void carSpeedUp();
     void carStop();
-    void move(Grid *grid, bool signalized);
+    bool move(Grid *grid, bool signalized);
     bool isCarSemaphoreGreen(Grid *grid);
     void removeMovable(Grid *grid);
     bool canIGoWithSemaphores(Grid *grid);

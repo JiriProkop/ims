@@ -195,6 +195,7 @@ Movable::Movable(MovableThing _kind, int _start_x, int _start_y, int _end_x, int
     end_x = _end_x;
     end_y = _end_y;
     orientation = _orientation;
+    goingOut = false;
     aggressivity = getRand();
     if (kind == person) {
         getCoordinationsForPedestrian(grid);
@@ -336,66 +337,96 @@ bool Movable::checkIfFinished() {
  *
  * @param grid The grid.
  */
-void Movable::move(Grid *grid, bool signalized) {
+bool Movable::move(Grid *grid, bool signalized) {
+    for (int i = 0; i < velocity; i++) {
+
     const int PURKYNOVA_START = 48;
     const int PURKYNOVA_WIDTH = 24;
     const int SKACELOVA_START = 46;
     const int SKACELOVA_WIDTH = 28;
 
     // stop if obejct if it cannot move
-    // TODO jenom pro krizovatky se semafory
     bool canIGo = false;
     if (signalized) {
         canIGo = canIGoWithSemaphores(grid);
     } else {
         canIGo = canIGoWithoutSemaphores(grid);
     }
+
+    printf("canIgo: %d\n", canIGo);
+
     if (kind == car) {
+        printf("car\n");
 
         switch (orientation) {
             case left:
-                if (x == PURKYNOVA_START + PURKYNOVA_WIDTH + 4) {
+                if (x == PURKYNOVA_START + PURKYNOVA_WIDTH + 14) {
                     if (!canIGo) {
                         carStop();
+                    } else {
+                        goingOut = true;
                     }
                 }
                 break;
 
             case right:
-                if (x == PURKYNOVA_START - 4) {
+                if (x == PURKYNOVA_START - 14) {
                     if (!canIGo) {
                         carStop();
+                    } else {
+                        goingOut = true;
                     }
                 }
                 break;
 
             case up:
-                if (y == SKACELOVA_START - 4) {
+                if (y == SKACELOVA_START - 14) {
                     if (!canIGo) {
                         carStop();
+                    } else {
+                        goingOut = true;
                     }
                 }
                 break;
 
             case down:
-                if (y == SKACELOVA_START + SKACELOVA_WIDTH + 4) {
+                if (y == SKACELOVA_START + SKACELOVA_WIDTH + 14) {
                     if (!canIGo) {
                         carStop();
+                    } else {
+                        goingOut = true;
                     }
                 }
                 break;
+
+            printf("velocity %d\n", velocity);
         }
     } else if (kind == person) {
+        printf("person\n");
         if (!canIGo) {
-            return;
+            return false;
         }
     }
 
-    for (int i = 0; i < velocity; i++) {
-        // FIXME diky tomuto obcas skipnou pravidla - jako zastaveni pred prechodem. canIGo se bude muset volat casteji
-        if (checkIfClearWay(grid) && !checkIfFinished()) {
+
+
+        printf("xy: %d %d\n",x,y);
+        if (checkIfFinished()) {
+
+            if (kind == person) {
+                grid->removePerson(x, y);
+            } else if (kind == car) {
+                grid->removeCar(x, y, orientation);
+            }
+            
+            std::cout << "removed\n";
+            return true;
+        }
+        
+        if (canIGo) {
             int new_x = x;
             int new_y = y;
+            printf("new xy: %d\n");
 
             if (orientation == left) {
                 new_x -= 1;
@@ -408,6 +439,7 @@ void Movable::move(Grid *grid, bool signalized) {
             }
 
             // make a turn
+            Orientation newOrientation = orientation;
             switch (orientation) {
                 case Orientation::left:
                 case Orientation::right:
@@ -415,9 +447,9 @@ void Movable::move(Grid *grid, bool signalized) {
                         std::cout << "before turn"
                                   << "\n";
                         if (new_y < end_y) {
-                            orientation = up;
+                            newOrientation = up;
                         } else {
-                            orientation = down;
+                            newOrientation = down;
                         }
                     }
                     break;
@@ -427,18 +459,21 @@ void Movable::move(Grid *grid, bool signalized) {
                         std::cout << "before turn"
                                   << "\n";
                         if (new_x < end_x) {
-                            orientation = right;
+                            newOrientation = right;
                         } else {
-                            orientation = left;
+                            newOrientation = left;
                         }
                     }
                     break;
             }
             if (kind == person) {
+                std::cout << "nok\n";
                 grid->removePerson(x, y);
+                std::cout << "ok\n";
                 grid->createPerson(new_x, new_y);
             } else if (kind == car) {
                 grid->removeCar(x, y, orientation);
+                orientation = newOrientation;
                 grid->createCar(new_x, new_y, orientation);
             }
 
@@ -457,14 +492,9 @@ void Movable::move(Grid *grid, bool signalized) {
             carSpeedUp();
         }
 
-        if (!isCarSemaphoreGreen(grid)) {
-            carSlowDown();
-
-            if (velocity < 2) {
-                velocity = 2;
-            }
-        }
     }
+
+    return false;
 }
 
 /**
@@ -614,6 +644,11 @@ bool Movable::canIGoWithSemaphores(Grid *grid) {
         return false;
     }
     if (kind == car) {
+        // the car is going out of the intersection
+        if (goingOut) {
+            return true;
+        }
+
         if (isCarSemaphoreGreen(grid) || amIinsideIntersection(grid)) {
             return true;
         }

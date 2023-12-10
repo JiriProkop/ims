@@ -27,7 +27,18 @@ void Simulation::makeStep(std::vector<Movable> *movableThings) {
 
             movableThings->erase(movableThings->begin() + i);
         } else {
-            movableThings->at(i).move(&grid, signalizedIntersection);
+            bool output = movableThings->at(i).move(&grid, signalizedIntersection);
+
+            if (output) {
+            if (movableThings->at(i).getKind() == person) {
+                finishedPedestrians++;
+            } else if (movableThings->at(i).getKind() == car) {
+                finishedCars++;
+            }
+
+            movableThings->erase(movableThings->begin() + i);
+            }
+
         }
     }
 }
@@ -77,15 +88,17 @@ void Simulation::Run() {
     for (int i = 0; i < SECONDS; i++) {
         if (i % 16 == 0) {
             try {
-                Movable tmp(car, 10, 54, 118, 54, right, &grid);
-                movableThings.push_back(tmp);
+
+                Movable tmp2(car, 110, 60, 55, 4, left, &grid);
+                movableThings.push_back(tmp2);
+
             } catch (const std::exception &e) {
             }
         }
         if (i % 5 == 0) {
             try {
-                Movable tmp(person, 0, 0, 0, 0, right, &grid);
-                movableThings.push_back(tmp);
+                //Movable tmp(person, 0, 0, 50, 50, right, &grid);
+                //movableThings.push_back(tmp);
             } catch (const std::exception &e) {
             }
         }
