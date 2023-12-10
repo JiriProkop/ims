@@ -108,8 +108,6 @@ void Grid::createCar(int x_left, int y_left, Orientation orientation) {
                 throw std::invalid_argument("The car is being placed out of the grid bounds.");
                 return;
             } else if (!grid[i][j].isEmpty()) {
-                std::cout << "x_left: " << x_left << " y_left: " << y_left << " i: " << i << " j: " << j << std::endl;
-                std::cout << grid[i][j].getColor().r << " " << grid[i][j].getColor().g << " " << grid[i][j].getColor().b << std::endl;
                 throw std::invalid_argument("The car does not fit - some 'needed' point is not empty.");
                 return;
             }       

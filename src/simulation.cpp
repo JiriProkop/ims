@@ -8,6 +8,7 @@
  * @param signalizedIntersection Whether the intersection is signalized or not.
  */
 Simulation::Simulation(bool signalizedIntersection) {
+    std::srand(time(0));
     this->signalizedIntersection = signalizedIntersection;
     generateCrossroadBackgroud(&grid);
     finishedPedestrians = 0;
@@ -86,6 +87,8 @@ void Simulation::Run() {
 
     std::vector<Movable> movableThings;
     for (int i = 0; i < SECONDS; i++) {
+        makeStep(&movableThings);
+        
         if (i % 16 == 0) {
             try {
 
@@ -103,7 +106,6 @@ void Simulation::Run() {
             }
         }
         semaphoreRotation(i);
-        makeStep(&movableThings);
 
         generateImage(grid, DEFAULT_IMAGE_SIZE, "output/" + std::to_string(i) + ".bmp");
     }
