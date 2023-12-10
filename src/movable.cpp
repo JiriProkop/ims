@@ -160,10 +160,10 @@ void Movable::getCoordinationsForCar(Grid *grid) {
         x = 54;
         y = 110;
         orientation = Orientation::down;
-        if(rand_end >= 0 && rand_end < 0.5) {
+        if(rand_end >= 0 && rand_end < 0.3) {
             end_x = possible_end_bottom_x;
             end_y = possible_end_bottom_y;
-        } else if(rand_end >= 0.5 && rand_end < 0.75) {
+        } else if(rand_end >= 0.3 && rand_end < 0.65) {
             end_x = possible_end_right_x;
             end_y = possible_end_right_y;
         } else {
@@ -175,10 +175,10 @@ void Movable::getCoordinationsForCar(Grid *grid) {
         x = 66;
         y = 10;
         orientation = Orientation::up;
-        if(rand_end >= 0 && rand_end < 0.5) {
+        if(rand_end >= 0 && rand_end < 0.2) {
             end_x = possible_end_top_x;
             end_y = possible_end_top_y;
-        } else if(rand_end >= 0.5 && rand_end < 0.75) {
+        } else if(rand_end >= 0.2 && rand_end < 0.6) {
             end_x = possible_end_right_x;
             end_y = possible_end_right_y;
         } else {
@@ -190,10 +190,10 @@ void Movable::getCoordinationsForCar(Grid *grid) {
         x = 10;
         y = 54;
         orientation = Orientation::right;
-        if(rand_end >= 0 && rand_end < 0.5) {
+        if(rand_end >= 0 && rand_end < 0.6) {
             end_x = possible_end_right_x;
             end_y = possible_end_right_y;
-        } else if(rand_end >= 0.5 && rand_end < 0.75) {
+        } else if(rand_end >= 0.6 && rand_end < 0.8) {
             end_x = possible_end_bottom_x;
             end_y = possible_end_bottom_y;
         } else {
@@ -205,10 +205,10 @@ void Movable::getCoordinationsForCar(Grid *grid) {
         x = 110;
         y = 66;
         orientation = Orientation::left;
-        if(rand_end >= 0 && rand_end < 0.5) {
+        if(rand_end >= 0 && rand_end < 0.6) {
             end_x = possible_end_left_x;
             end_y = possible_end_left_y;
-        } else if(rand_end >= 0.5 && rand_end < 0.75) {
+        } else if(rand_end >= 0.6 && rand_end < 0.8) {
             end_x = possible_end_bottom_x;
             end_y = possible_end_bottom_y;
         } else {
