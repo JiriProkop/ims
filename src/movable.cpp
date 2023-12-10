@@ -246,6 +246,7 @@ Movable::Movable(MovableThing _kind, int _start_x, int _start_y, int _end_x, int
     } else if (kind == car) {
         getCoordinationsForCar(grid);
         grid->createCar(x, y, orientation);
+        
         velocity = initial_car_velocity;
     }
 }
@@ -366,8 +367,6 @@ bool Movable::checkIfClearWay(Grid *grid) {
             }
         }
     }
-
-    // TODO only checks the left front point of the car, is it good enough?
 
     return true;
 }
@@ -524,7 +523,12 @@ bool Movable::move(Grid *grid, bool signalized) {
                 try {
                     grid->createCar(new_x, new_y, orientation);
                 } catch(const std::invalid_argument& e) {
-                    grid->createCar(x, y, orientation);
+                    try {
+                        grid->createCar(x, y, orientation);
+                    } catch(const std::invalid_argument& e) {
+                        return true;
+                    }
+                    
                     new_x = x;
                     new_y = y;
                 }
